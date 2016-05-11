@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-QString value = "";
+QString tmpValue = "";
 QString total = "";
 double lhs, rhs; //left hand side and right hand side
 bool addBool = false;
@@ -16,27 +16,29 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     /* Visor */
     visor = new QLabel("0", this);
-    visor->setGeometry(QRect(QPoint(0,0), QSize(50, 150)));
+    visor->setGeometry(QRect(QPoint(25,15), QSize(250, 50)));
+    visor->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    visor->setStyleSheet("font-weight: bold; color: black");
 
     /* Clear Button */
     clearButton = new QPushButton("C", this);
-    clearButton->setGeometry(QRect(QPoint(105, 100), QSize(75,50)));
+    clearButton->setGeometry(QRect(QPoint(125, 80), QSize(75,50)));
     // when clearButton is released, connect it with clear call.
     connect(clearButton, SIGNAL(released()), this, SLOT(clear()));
 
     /* Clear All Button */
     clearAllButton = new QPushButton("CE", this);
-    clearAllButton->setGeometry(QRect(QPoint(30, 100), QSize(75,50)));
+    clearAllButton->setGeometry(QRect(QPoint(25, 80), QSize(75,50)));
     connect(clearButton, SIGNAL(released()), this, SLOT(clearAll()));
 
     /* Equals Button */
     equalsButton = new QPushButton("=", this);
-    equalsButton->setGeometry(QRect(QPoint(225, 100), QSize(50,50)));
+    equalsButton->setGeometry(QRect(QPoint(225, 80), QSize(50,50)));
     connect(equalsButton, SIGNAL(released()), this, SLOT(equals()));
 
     /* Add Button */
     addButton = new QPushButton("+", this);
-    addButton->setGeometry(QRect(QPoint(225, 150), QSize(50,50)));
+    addButton->setGeometry(QRect(QPoint(225, 140), QSize(50,50)));
     connect(addButton, SIGNAL(released()), this, SLOT(add()));
 
     /* Substract Button */
@@ -46,47 +48,47 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Multiply Button */
     multiplyButton = new QPushButton("*", this);
-    multiplyButton->setGeometry(QRect(QPoint(225, 250), QSize(50,50)));
+    multiplyButton->setGeometry(QRect(QPoint(225, 260), QSize(50,50)));
     connect(multiplyButton, SIGNAL(released()), this, SLOT(multiply()));
 
     /* Divide Button */
     equalsButton = new QPushButton("/", this);
-    equalsButton->setGeometry(QRect(QPoint(225, 300), QSize(50,50)));
+    equalsButton->setGeometry(QRect(QPoint(225, 320), QSize(50,50)));
     connect(equalsButton, SIGNAL(released()), this, SLOT(equals()));
 
     /* Zero Button */
     divideButton = new QPushButton("0", this);
-    divideButton->setGeometry(QRect(QPoint(30, 300), QSize(50,50)));
+    divideButton->setGeometry(QRect(QPoint(30, 315), QSize(100,50)));
     connect(divideButton, SIGNAL(released()), this, SLOT(divide()));
 
     /* One Button */
     oneButton = new QPushButton("1", this);
-    oneButton->setGeometry(QRect(QPoint(30, 250), QSize(50,50)));
+    oneButton->setGeometry(QRect(QPoint(30, 260), QSize(50,50)));
     connect(oneButton, SIGNAL(released()), this, SLOT(one()));
 
     /* Two Button */
     twoButton = new QPushButton("2", this);
-    twoButton->setGeometry(QRect(QPoint(80, 250), QSize(50,50)));
+    twoButton->setGeometry(QRect(QPoint(85, 260), QSize(50,50)));
     connect(twoButton, SIGNAL(released()), this, SLOT(two()));
 
     /* Three Button */
     threeButton = new QPushButton("3", this);
-    threeButton->setGeometry(QRect(QPoint(130, 250), QSize(50,50)));
+    threeButton->setGeometry(QRect(QPoint(140, 260), QSize(50,50)));
     connect(threeButton, SIGNAL(released()), this, SLOT(three()));
 
     /* Four Button */
     fourButton = new QPushButton("4", this);
-    fourButton->setGeometry(QRect(QPoint(30, 200), QSize(50,50)));
+    fourButton->setGeometry(QRect(QPoint(30, 205), QSize(50,50)));
     connect(fourButton, SIGNAL(released()), this, SLOT(four()));
 
     /* Five Button */
     fiveButton = new QPushButton("5", this);
-    fiveButton->setGeometry(QRect(QPoint(80, 200), QSize(50,50)));
+    fiveButton->setGeometry(QRect(QPoint(85, 205), QSize(50,50)));
     connect(fiveButton, SIGNAL(released()), this, SLOT(five()));
 
     /* Six Button */
     sixButton = new QPushButton("6", this);
-    sixButton->setGeometry(QRect(QPoint(130, 200), QSize(50,50)));
+    sixButton->setGeometry(QRect(QPoint(140, 205), QSize(50,50)));
     connect(sixButton, SIGNAL(released()), this, SLOT(six()));
 
     /* Seven Button */
@@ -96,20 +98,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Eight Button */
     eightButton = new QPushButton("8", this);
-    eightButton->setGeometry(QRect(QPoint(80, 150), QSize(50,50)));
+    eightButton->setGeometry(QRect(QPoint(85, 150), QSize(50,50)));
     connect(eightButton, SIGNAL(released()), this, SLOT(eight()));
 
     /* Nine Button */
     nineButton = new QPushButton("9", this);
-    nineButton->setGeometry(QRect(QPoint(130, 150), QSize(50,50)));
+    nineButton->setGeometry(QRect(QPoint(140, 150), QSize(50,50)));
     connect(nineButton, SIGNAL(released()), this, SLOT(nine()));
 }
 
 /* Clears the visor */
 void MainWindow::clear()
 {
-    value = "0";
-    visor->setText(value);
+    tmpValue = "0";
+    visor->setText(tmpValue);
     rhs = 0;
     lhs = 0;
     total = "";
@@ -122,8 +124,8 @@ void MainWindow::clear()
 /* Clears the visor */
 void MainWindow::clearAll()
 {
-    value = "0";
-    visor->setText(value);
+    tmpValue = "0";
+    visor->setText(tmpValue);
     rhs = 0;
     lhs = 0;
     total = "";
@@ -136,7 +138,7 @@ void MainWindow::clearAll()
 /* Equal action */
 void MainWindow::equals()
 {
-    rhs = value.toDouble();
+    rhs = tmpValue.toDouble();
     if (addBool)
         total = QString::number(lhs+rhs);
     else if (substractBool)
@@ -145,114 +147,114 @@ void MainWindow::equals()
         total = QString::number(lhs*rhs);
     else if (divideBool)
         total = QString::number(lhs/rhs);
-    visor->setText(value);
+    visor->setText(tmpValue);
     clear();
 }
 
 /* Add action */
 void MainWindow::add()
 {
-    lhs = value.toDouble();
-    value = "";
-    visor->setText(value);
+    lhs = tmpValue.toDouble();
+    tmpValue = "";
+    visor->setText(tmpValue);
     addBool = true;
 }
 
 /* Substract action */
 void MainWindow::substract()
 {
-    lhs = value.toDouble();
-    value = "";
-    visor->setText(value);
+    lhs = tmpValue.toDouble();
+    tmpValue = "";
+    visor->setText(tmpValue);
     substractBool = true;
 }
 
 /* Multiply action */
 void MainWindow::multiply()
 {
-    lhs = value.toDouble();
-    value = "";
-    visor->setText(value);
+    lhs = tmpValue.toDouble();
+    tmpValue = "";
+    visor->setText(tmpValue);
     multiplyBool = true;
 }
 
 /* Divide action */
 void MainWindow::divide()
 {
-    lhs = value.toDouble();
-    value = "";
-    visor->setText(value);
+    lhs = tmpValue.toDouble();
+    tmpValue = "";
+    visor->setText(tmpValue);
     divideBool = true;
 }
 
 /* Add Zero to visor */
 void MainWindow::zero()
 {
-    value = value + "0";
-    visor->setText(value);
+    tmpValue = tmpValue + "0";
+    visor->setText(tmpValue);
 }
 
 /* Add One to visor */
 void MainWindow::one()
 {
-    value = value + "1";
-    visor->setText(value);
+    tmpValue = tmpValue + "1";
+    visor->setText(tmpValue);
 }
 
 /* Add Two to visor */
 void MainWindow::two()
 {
-    value = value + "2";
-    visor->setText(value);
+    tmpValue = tmpValue + "2";
+    visor->setText(tmpValue);
 }
 
 /* Add Three to visor */
 void MainWindow::three()
 {
-    value = value + "3";
-    visor->setText(value);
+    tmpValue = tmpValue + "3";
+    visor->setText(tmpValue);
 }
 
 /* Add Four to visor */
 void MainWindow::four()
 {
-    value = value + "4";
-    visor->setText(value);
+    tmpValue = tmpValue + "4";
+    visor->setText(tmpValue);
 }
 
 /* Add Five to visor */
 void MainWindow::five()
 {
-    value = value + "5";
-    visor->setText(value);
+    tmpValue = tmpValue + "5";
+    visor->setText(tmpValue);
 }
 
 /* Add Six to visor */
 void MainWindow::six()
 {
-    value = value + "6";
-    visor->setText(value);
+    tmpValue = tmpValue + "6";
+    visor->setText(tmpValue);
 }
 
 /* Add Seven to visor */
 void MainWindow::seven()
 {
-    value = value + "7";
-    visor->setText(value);
+    tmpValue = tmpValue + "7";
+    visor->setText(tmpValue);
 }
 
 /* Add Eight to visor */
 void MainWindow::eight()
 {
-    value = value + "8";
-    visor->setText(value);
+    tmpValue = tmpValue + "8";
+    visor->setText(tmpValue);
 }
 
 /* Add Nine to visor */
 void MainWindow::nine()
 {
-    value = value + "9";
-    visor->setText(value);
+    tmpValue = tmpValue + "9";
+    visor->setText(tmpValue);
 }
 
 MainWindow::~MainWindow()
