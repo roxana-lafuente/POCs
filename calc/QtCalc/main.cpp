@@ -6,8 +6,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
-    // QtCalc will start maximized.
-    //w.showMaximized();
     // Set Window title.
     w.setWindowTitle("QtCalc");
     // QtCalc window will have a fixed size.

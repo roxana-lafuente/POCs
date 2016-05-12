@@ -110,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :
 /* Clears the visor */
 void MainWindow::clear()
 {
-    tmpValue = "0";
+    tmpValue = "";
     visor->setText(tmpValue);
     rhs = 0;
     lhs = 0;
@@ -124,7 +124,7 @@ void MainWindow::clear()
 /* Clears the visor */
 void MainWindow::clearAll()
 {
-    tmpValue = "0";
+    tmpValue = "";
     visor->setText(tmpValue);
     rhs = 0;
     lhs = 0;
@@ -147,8 +147,17 @@ void MainWindow::equals()
         total = QString::number(lhs*rhs);
     else if (divideBool)
         total = QString::number(lhs/rhs);
-    visor->setText(tmpValue);
-    clear();
+    else
+        total = QString::number(lhs);
+    visor->setText(total);
+    // Clears temporal values.
+    rhs = 0.0;
+    lhs = 0.0;
+    addBool = false;
+    substractBool = false;
+    multiplyBool = false;
+    divideBool = false;
+    tmpValue = total;
 }
 
 /* Add action */
