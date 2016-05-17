@@ -6,10 +6,7 @@
 QString tmpValue = "";
 QString total = "";
 double lhs, rhs; //left hand side and right hand side
-bool addBool = false;
-bool substractBool = false;
-bool multiplyBool = false;
-bool divideBool = false;
+double (*binaryOperator)(double, double);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -110,15 +107,11 @@ MainWindow::MainWindow(QWidget *parent) :
 /* Clears the visor */
 void MainWindow::clear()
 {
-    tmpValue = "";
+    tmpValue = "0";
     visor->setText(tmpValue);
     rhs = 0;
     lhs = 0;
     total = "";
-    addBool = false;
-    substractBool = false;
-    multiplyBool = false;
-    divideBool = false;
 }
 
 /* Clears the visor */
@@ -129,34 +122,19 @@ void MainWindow::clearAll()
     rhs = 0;
     lhs = 0;
     total = "";
-    addBool = false;
-    substractBool = false;
-    multiplyBool = false;
-    divideBool = false;
+    binaryOperator = NULL;
 }
 
 /* Equal action */
 void MainWindow::equals()
 {
     rhs = tmpValue.toDouble();
-    if (addBool)
-        total = QString::number(lhs+rhs);
-    else if (substractBool)
-        total = QString::number(lhs-rhs);
-    else if (multiplyBool)
-        total = QString::number(lhs*rhs);
-    else if (divideBool)
-        total = QString::number(lhs/rhs);
-    else
-        total = QString::number(lhs);
+    total = QString::number(binaryOperator(lhs, rhs));
     visor->setText(total);
     // Clears temporal values.
     rhs = 0.0;
     lhs = 0.0;
-    addBool = false;
-    substractBool = false;
-    multiplyBool = false;
-    divideBool = false;
+    binaryOperator = NULL;
     tmpValue = total;
 }
 
@@ -166,7 +144,7 @@ void MainWindow::add()
     lhs = tmpValue.toDouble();
     tmpValue = "";
     visor->setText(tmpValue);
-    addBool = true;
+    binaryOperator = [] (double x, double y) {return x + y;};
 }
 
 /* Substract action */
@@ -175,7 +153,7 @@ void MainWindow::substract()
     lhs = tmpValue.toDouble();
     tmpValue = "";
     visor->setText(tmpValue);
-    substractBool = true;
+    binaryOperator = [] (double x, double y) {return x - y;};
 }
 
 /* Multiply action */
@@ -184,7 +162,7 @@ void MainWindow::multiply()
     lhs = tmpValue.toDouble();
     tmpValue = "";
     visor->setText(tmpValue);
-    multiplyBool = true;
+    binaryOperator = [] (double x, double y) {return x * y;};
 }
 
 /* Divide action */
@@ -193,7 +171,7 @@ void MainWindow::divide()
     lhs = tmpValue.toDouble();
     tmpValue = "";
     visor->setText(tmpValue);
-    divideBool = true;
+    binaryOperator = [] (double x, double y) {return x / y;};
 }
 
 /* Add Zero to visor */
