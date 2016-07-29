@@ -2,7 +2,7 @@
  * @file   bst.h
  * @Author Me (roxana.lafuente@gmail.com)
  * @date   July, 2016
- * @brief  Brief description of file.
+ * @brief  C++ Binary Search Tree (BST) implementation.
  *
  * BST - Binary Search Tree
  */
