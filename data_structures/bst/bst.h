@@ -66,7 +66,7 @@ struct node
     node<T>* getGreatestNode(node<T>* n);
     void insertNode(T v);
     void deleteNode(T v);
-    node<T> search(T v);
+    node<T>* search(T v);
     void print();
 
 private:
@@ -80,8 +80,8 @@ private:
     void recursiveDeleteNode(T v, node<T>* n);
     void iterativeDeleteNode(T v);
 
-    void recursiveSearch(T v, node<T>* n);
-    void iterativeSearch(T v, node<T>* n);
+    node<T>* recursiveSearch(T v, node<T>* n);
+    node<T>* iterativeSearch(T v, node<T>* n);
 
     void recursivePrint(node<T>* n);
     void iterativePrint();
@@ -348,18 +348,18 @@ void node<T>::iterativeDeleteNode(T v)
  * @retparam Node with value v.
  */
 template <typename T>
-node<T> node<T>::search(T v)
+node<T>* node<T>::search(T v)
 {
     switch (mode)
     {
         default:
         case(RECURSIVE):
         {
-            recursiveSearch(v, this);
+            return recursiveSearch(v, this);
         }
         case(ITERATIVE):
         {
-            iterativeSearch(v, this);
+            return iterativeSearch(v, this);
         }
     }
 }
@@ -374,19 +374,23 @@ node<T> node<T>::search(T v)
  * @retparam Node with value v.
  */
 template <typename T>
-void node<T>::recursiveSearch(T v, node<T>* n)
+node<T>* node<T>::recursiveSearch(T v, node<T>* n)
 {
-    if(n->value == v)
+    if(n == NULL)
     {
-        return;
+        return NULL;
     }
-    else if(v>value)
+    else if(n->value == v)
     {
-        recursiveSearch(v, right);
+        return n;
     }
-    else
+    else if(v > n->value)
     {
-        recursiveSearch(v, left);
+        recursiveSearch(v, n->right);
+    }
+    else if(v < n->value)
+    {
+        recursiveSearch(v, n->left);
     }
 }
 
@@ -400,9 +404,10 @@ void node<T>::recursiveSearch(T v, node<T>* n)
  * @retparam Node with value v.
  */
 template <typename T>
-void node<T>::iterativeSearch(T v, node<T>* n)
+node<T>* node<T>::iterativeSearch(T v, node<T>* n)
 {
     // TODO
+    return NULL;
 }
 
 

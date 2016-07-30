@@ -18,7 +18,7 @@ cmake -DBUILD_SHARED_LIBS=ON -Dgtest_build_samples=ON -Dgtest_build_tests=ON .
 make
 ````
 
-### Check Google test installed correctly
+### Check Google test is installed correctly
 ````
 make test
 ````
@@ -47,11 +47,11 @@ sudo ldconfig -v | grep gtest
 ````
 
 
-### How to run in Google Test suite:
+### How to run tests suite:
 - make tests; make
 
-## Platforms:
-- Supported for Linux (Ubuntu / Debian).
+## Supported platforms:
+- Linux (Ubuntu / Debian).
 
 ## Project Status:
 - Still in progress.
