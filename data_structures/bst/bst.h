@@ -77,8 +77,8 @@ private:
     void recursiveInsertNode(T v, node<T>* n);
     void iterativeInsertNode(T v);
 
-    void recursiveDeleteNode(T v, node<T>* n);
-    void iterativeDeleteNode(T v);
+    node<T>* recursiveDeleteNode(T v, node<T>* n);
+    node<T>* iterativeDeleteNode(T v);
 
     node<T>* recursiveSearch(T v, node<T>* n);
     node<T>* iterativeSearch(T v, node<T>* n);
@@ -275,54 +275,59 @@ void node<T>::deleteNode(T v)
  * @param [v] Value to delete.
  */
 template <typename T>
-void node<T>::recursiveDeleteNode(T v, node<T>* n)
+node<T>* node<T>::recursiveDeleteNode(T v, node<T>* n)
 {
-    if(n->value == v)
+    node<T>* toDelete;
+    if(n == NULL)
     {
-        node<T>* toDelete;
+        // We did not find the value. Everything stays as it was.
+        return n;
+    }
+    else if(v > n->value)
+    {
+        // The node to delete is in the right tree.
+        n->right = recursiveDeleteNode(v, n->right);
+    }
+    else if(v < n->value)
+    {
+        // The node to delete is in the left tree.
+        n->left = recursiveDeleteNode(v, n->left);
+    }
+    else // (n->value == v)
+    {
+        // Case I: Leaf.
         if(n->left == NULL && n->right == NULL)
         {
-            cout << "1" << endl;
-            toDelete = n;
+            delete n;
+            n = NULL;
         }
+        // Case II A: Has a right child.
         else if(n->left==NULL && n->right!=NULL)
         {
-            cout << "2" << endl;
             toDelete = n->right;
             n->value = toDelete->value;
             n->right = toDelete->right;
             n->left = toDelete->left;
+            delete toDelete;
         }
+        // Case II B: Has a left child.
         else if(n->left!=NULL && n->right==NULL)
         {
-            cout << "3" << endl;
             toDelete = n->left;
             n->value = toDelete->value;
             n->right = toDelete->right;
             n->left = toDelete->left;
+            delete toDelete;
         }
+        // Case III: Has two childs.
         else
         {
-            cout << "4" << endl;
             toDelete = getGreatestNode(n->left);
             n->value = toDelete->value;
-            n->right = toDelete->right;
-            n->left = toDelete->left;
+            n->right = recursiveDeleteNode(toDelete->value, n->right);
         }
-        //cout << toDelete->left << " " << toDelete->value << " " << toDelete->right << endl;
-        if (toDelete != NULL)
-            delete toDelete;
     }
-    else if(v>n->value)
-    {
-        // The node to delete is in the right tree.
-        recursiveDeleteNode(v, n->right);
-    }
-    else
-    {
-        // The node to delete is in the left tree.
-        recursiveDeleteNode(v, n->left);
-    }
+    return n;
 }
 
 
@@ -333,9 +338,9 @@ void node<T>::recursiveDeleteNode(T v, node<T>* n)
  * @param [v] Value to delete.
  */
 template <typename T>
-void node<T>::iterativeDeleteNode(T v)
+node<T>* node<T>::iterativeDeleteNode(T v)
 {
-    // TODO
+    return NULL;
 }
 
 

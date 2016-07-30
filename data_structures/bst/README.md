@@ -1,7 +1,7 @@
 # BST - Binary Search Tree
 
 ## How to run in Linux:
-- make clean; make
+- make clean; make; ./bst
 
 ## How to install Google Test:
 
@@ -47,8 +47,8 @@ sudo ldconfig -v | grep gtest
 ````
 
 
-### How to run tests suite:
-- make tests; make
+## How to run tests suite:
+- make clean; tests; ./tests
 
 ## Supported platforms:
 - Linux (Ubuntu / Debian).
