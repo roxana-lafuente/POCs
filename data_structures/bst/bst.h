@@ -78,7 +78,7 @@ private:
     void iterativeInsertNode(T v);
 
     node<T>* recursiveDeleteNode(T v, node<T>* n);
-    node<T>* iterativeDeleteNode(T v);
+    void iterativeDeleteNode(T v);
 
     node<T>* recursiveSearch(T v, node<T>* n);
     node<T>* iterativeSearch(T v, node<T>* n);
@@ -106,10 +106,12 @@ node<T>* node<T>::getGreatestNode(node<T>* n)
         case(RECURSIVE):
         {
             return recursiveGetGreatestNode(n);
+            break;
         }
         case(ITERATIVE):
         {
             return iterativeGetGreatestNode(n);
+            break;
         }
     }
 }
@@ -184,10 +186,12 @@ void node<T>::insertNode(T v)
         case(RECURSIVE):
         {
             recursiveInsertNode(v, this);
+            break;
         }
         case(ITERATIVE):
         {
             iterativeInsertNode(v);
+            break;
         }
     }
 }
@@ -240,7 +244,35 @@ void node<T>::recursiveInsertNode(T v, node<T>* n)
 template <typename T>
 void node<T>::iterativeInsertNode(T v)
 {
-    // TODO
+    node<T>* n = this;
+    bool inserted = false;
+    while (!inserted)
+    {
+        if(v > n->value)
+        {
+            if(n->right != NULL)
+            {
+                n = n->right;
+            }
+            else
+            {
+                n->right = new node<T>(v, NULL, NULL, mode);
+                inserted = true;
+            }
+        }
+        else if(v < n->value)
+        {
+            if (n->left != NULL)
+            {
+                n = n->left;
+            }
+            else
+            {
+                n->left = new node<T>(v, NULL, NULL, mode);
+                inserted = true;
+            }
+        }
+    }
 }
 
 
@@ -259,12 +291,16 @@ void node<T>::deleteNode(T v)
         case(RECURSIVE):
         {
             recursiveDeleteNode(v, this);
+            break;
         }
         case(ITERATIVE):
         {
             iterativeDeleteNode(v);
+            cout << "out of iterative" << endl;
+            break;
         }
     }
+    cout << "actually out!" << endl;
 }
 
 
@@ -322,7 +358,7 @@ node<T>* node<T>::recursiveDeleteNode(T v, node<T>* n)
         // Case III: Has two childs.
         else
         {
-            toDelete = getGreatestNode(n->left);
+            toDelete = recursiveGetGreatestNode(n->left);
             n->value = toDelete->value;
             n->right = recursiveDeleteNode(toDelete->value, n->right);
         }
@@ -338,9 +374,80 @@ node<T>* node<T>::recursiveDeleteNode(T v, node<T>* n)
  * @param [v] Value to delete.
  */
 template <typename T>
-node<T>* node<T>::iterativeDeleteNode(T v)
+void node<T>::iterativeDeleteNode(T v)
 {
-    return NULL;
+    node<T>* toDelete;
+    node<T>* parent;
+    node<T>* n;
+    n = this;
+    parent = this;
+    bool deleted = false, direction; // direction 0 if left, 1 if right
+    while(n != NULL and !deleted)
+    {
+        if(v > n->value)
+        {
+            // The node to delete is in the right tree.
+            //parent = (n != parent && n->value > parent->value) ? parent->right : parent->left;
+            n = n->right;
+            direction = true;
+        }
+        else if(v < n->value)
+        {
+            // The node to delete is in the left tree.
+            //parent = (n != parent && n->value > parent->value) ? parent->right : parent->left;
+            n = n->left;
+            direction = false;
+        }
+        else // (n->value == v)
+        {
+            // Case I: Leaf.
+            if(n->left == NULL && n->right == NULL)
+            {
+                cout << "case 1" << endl;
+                cout << "parent: " << parent->value << endl;
+                cout << "node: " << n->value << endl;
+                if(direction)
+                    parent->right = NULL;
+                else
+                    parent->left = NULL;
+                delete n;
+            }
+            // Case II A: Has a right child.
+            else if(n->left==NULL && n->right!=NULL)
+            {
+                toDelete = n->right;
+                n->value = toDelete->value;
+                n->right = toDelete->right;
+                n->left = toDelete->left;
+                delete toDelete;
+            }
+            // Case II B: Has a left child.
+            else if(n->left!=NULL && n->right==NULL)
+            {
+                toDelete = n->left;
+                n->value = toDelete->value;
+                n->right = toDelete->right;
+                n->left = toDelete->left;
+                delete toDelete;
+            }
+            // Case III: Has two childs.
+            else
+            {
+                toDelete = iterativeGetGreatestNode(n->left);
+                cout << "a" << endl;
+                n->value = toDelete->value;
+                cout << "b" << endl;
+                n->right = toDelete->right;
+                cout << "c" << endl;
+                n->left = toDelete->left;
+                cout << "d" << endl;
+                // delete toDelete;
+                // cout << "e" << endl;
+            }
+            deleted = true;
+        }
+    }
+    cout << "out!!" << endl;
 }
 
 
@@ -361,10 +468,12 @@ node<T>* node<T>::search(T v)
         case(RECURSIVE):
         {
             return recursiveSearch(v, this);
+            break;
         }
         case(ITERATIVE):
         {
             return iterativeSearch(v, this);
+            break;
         }
     }
 }
@@ -411,8 +520,23 @@ node<T>* node<T>::recursiveSearch(T v, node<T>* n)
 template <typename T>
 node<T>* node<T>::iterativeSearch(T v, node<T>* n)
 {
-    // TODO
-    return NULL;
+    bool found = false;
+    while(n != NULL and !found)
+    {
+        if(n->value == v)
+        {
+            found = true;
+        }
+        else if(v > n->value)
+        {
+            n = n->right;
+        }
+        else if(v < n->value)
+        {
+            n = n->left;
+        }
+    }
+    return n;
 }
 
 
@@ -429,10 +553,12 @@ void node<T>::print()
         case(RECURSIVE):
         {
             recursivePrint(this);
+            break;
         }
         case(ITERATIVE):
         {
             iterativePrint();
+            break;
         }
     }
     cout << endl;
@@ -479,6 +605,8 @@ template <typename T>
 void node<T>::iterativePrint()
 {
     // TODO
+    cout << "NOT IMPLEMENTED, momentarily using recursive implementation" << endl;
+    recursivePrint(this);
 }
 
 #endif // BST_H

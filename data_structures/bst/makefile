@@ -2,7 +2,7 @@ TARGET = bst
 TESTS = tests
 CC = g++
 FLAGS = -std=c++11
-CFLAGS = -c
+CFLAGS = -c -g
 OFLAGS = -o
 
 # TARGETS
