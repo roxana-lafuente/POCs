@@ -47,11 +47,11 @@ sudo ldconfig -v | grep gtest
 ````
 
 
-## How to run tests suite:
+## How to run the test suite:
 - make clean; tests; ./tests
 
 ## Supported platforms:
 - Linux (Ubuntu / Debian).
 
 ## Project Status:
-- Still in progress.
+- In progress.

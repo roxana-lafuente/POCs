@@ -25,6 +25,12 @@ enum algorithmType
 };
 
 
+enum DIRECTION
+{
+    LEFT, // Should go to the left sub-tree.
+    RIGHT // Should go to the right sub-tree.
+};
+
 /**
  * @name    BST
  * @brief   Binary Search Tree
@@ -61,6 +67,9 @@ struct node
                                                          left(l),
                                                          right(r),
                                                          mode(m) {}
+
+    /* Copy constructor */
+    node(const node<T>& n);
 
     /* Public methods */
     node<T>* getGreatestNode(node<T>* n);
@@ -156,17 +165,20 @@ node<T>* node<T>::recursiveGetGreatestNode(node<T>* n)
 template <typename T>
 node<T>* node<T>::iterativeGetGreatestNode(node<T>* n)
 {
+    node<T>* it = n;
+
     // Return NULL if the root is NULL.
     if (!n)
     {
         return NULL;
     }
 
-    node<T>* it = n;
+
     while(it->right != NULL)
     {
         it = it->right;
     }
+
     return it;
 }
 
@@ -296,11 +308,9 @@ void node<T>::deleteNode(T v)
         case(ITERATIVE):
         {
             iterativeDeleteNode(v);
-            cout << "out of iterative" << endl;
             break;
         }
     }
-    cout << "actually out!" << endl;
 }
 
 
@@ -377,36 +387,32 @@ template <typename T>
 void node<T>::iterativeDeleteNode(T v)
 {
     node<T>* toDelete;
-    node<T>* parent;
-    node<T>* n;
-    n = this;
-    parent = this;
-    bool deleted = false, direction; // direction 0 if left, 1 if right
+    node<T>* parent = this;
+    node<T>* n = this;
+    DIRECTION dir;
+    bool deleted = false;
     while(n != NULL and !deleted)
     {
         if(v > n->value)
         {
             // The node to delete is in the right tree.
-            //parent = (n != parent && n->value > parent->value) ? parent->right : parent->left;
+            parent = n;
             n = n->right;
-            direction = true;
+            dir = RIGHT;
         }
         else if(v < n->value)
         {
             // The node to delete is in the left tree.
-            //parent = (n != parent && n->value > parent->value) ? parent->right : parent->left;
+            parent = n;
             n = n->left;
-            direction = false;
+            dir = LEFT;
         }
         else // (n->value == v)
         {
             // Case I: Leaf.
             if(n->left == NULL && n->right == NULL)
             {
-                cout << "case 1" << endl;
-                cout << "parent: " << parent->value << endl;
-                cout << "node: " << n->value << endl;
-                if(direction)
+                if (dir)
                     parent->right = NULL;
                 else
                     parent->left = NULL;
@@ -434,20 +440,13 @@ void node<T>::iterativeDeleteNode(T v)
             else
             {
                 toDelete = iterativeGetGreatestNode(n->left);
-                cout << "a" << endl;
                 n->value = toDelete->value;
-                cout << "b" << endl;
-                n->right = toDelete->right;
-                cout << "c" << endl;
-                n->left = toDelete->left;
-                cout << "d" << endl;
-                // delete toDelete;
-                // cout << "e" << endl;
+                if (n->left == toDelete)
+                    n->left = NULL;
             }
             deleted = true;
         }
     }
-    cout << "out!!" << endl;
 }
 
 

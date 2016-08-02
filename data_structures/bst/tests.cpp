@@ -215,20 +215,14 @@ TEST_F(BSTIterativeTEST, InsertAndDeleteSeveralNodes) {
     while(i < nodes.size())
     {
         element = nodes.back();
-        cout << "BEFORE:" << endl;
-        bst->print();
         bst->deleteNode(element);
         nodes.pop_back();
-        cout << "AFTER:" << endl;
-        bst->print();
         // Check if it was correctly deleted.
         ASSERT_EQ(NULL, bst->search(element));
-        cout << "here" << endl;
         // All other nodes should still be on the BST.
         for (j = 0; j < nodes.size(); j++)
         {
             ASSERT_EQ(nodes[j], bst->search(nodes[j])->value);
-            cout << "aja!" << endl;
         }
     }
 
