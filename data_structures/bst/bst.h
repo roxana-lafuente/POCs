@@ -11,6 +11,7 @@
 #define BST_H
 
 #include <iostream>
+#include <vector>
 #include <stack>
 #include <list>
 
@@ -76,6 +77,7 @@ struct node
     void insertNode(T v);
     void deleteNode(T v);
     node<T>* search(T v);
+    void searchAll(T v, vector<node<T>*>& nodes);
     void print();
 
 private:
@@ -91,6 +93,9 @@ private:
 
     node<T>* recursiveSearch(T v, node<T>* n);
     node<T>* iterativeSearch(T v, node<T>* n);
+
+    void recursiveSearchAll(T v, node<T>* n, vector<node<T>*>& nodes);
+    void iterativeSearchAll(T v, node<T>* n, vector<node<T>*>& nodes);
 
     void recursivePrint(node<T>* n);
     void iterativePrint();
@@ -536,6 +541,92 @@ node<T>* node<T>::iterativeSearch(T v, node<T>* n)
         }
     }
     return n;
+}
+
+
+/**
+ * @name    searchAll
+ * @brief   Searches for a specific node and returns all nodes with that value
+ *
+ * @param [v] Searches for a value and returns the corresponding list of node addresses.
+ *
+ * @retparam Node with value v.
+ */
+template <typename T>
+void node<T>::searchAll(T v, vector<node<T>*>& nodes)
+{
+    switch (mode)
+    {
+        default:
+        case(RECURSIVE):
+        {
+            recursiveSearchAll(v, this, nodes);
+            break;
+        }
+        case(ITERATIVE):
+        {
+            iterativeSearchAll(v, this, nodes);
+            break;
+        }
+    }
+}
+
+
+/**
+ * @name    recursiveSearchAll
+ * @brief   Recursively searches for all nodes with a specific value
+ *
+ * @param [v] Searches for a value and returns the corresponding list of nodes.
+ *
+ * @retparam List of nodes with value v.
+ */
+template <typename T>
+void node<T>::recursiveSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
+{
+    if(n != NULL)
+    {
+        if(n->value == v)
+        {
+            nodes.push_back(n);
+        }
+        else if(v > n->value)
+        {
+            recursiveSearch(v, n->right);
+        }
+        else if(v < n->value)
+        {
+            recursiveSearch(v, n->left);
+        }
+    }
+}
+
+
+/**
+ * @name    iterativeSearchAll
+ * @brief   Iteratively searches for all nodes with a specific value
+ *
+ * @param [v] Searches for a value and returns the corresponding list of nodes.
+ *
+ * @retparam List of nodes with value v.
+ */
+template <typename T>
+void node<T>::iterativeSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
+{
+    while(n != NULL)
+    {
+        if(n->value == v)
+        {
+            nodes.push_back(n);
+        }
+        else if(v > n->value)
+        {
+            n = n->right;
+        }
+        else if(v < n->value)
+        {
+            n = n->left;
+        }
+    }
 }
 
 

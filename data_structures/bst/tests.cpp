@@ -131,41 +131,47 @@ TEST_F(BSTRecursiveTEST, DeleteRoot) {
 	}
 }
 
-// TEST_F(BSTRecursiveTEST, RandomizedTest) {
-//     static const int N = 200;
-//     vector<int> nodes;
-//     // Generate N random nodes to insert.
-//     srand(time(NULL));
-//     for (int i=0; i<N; i++){
-//         nodes.push_back(rand() * pow(-1, (rand() % 3) + 1));
-//     }
-//     // Insert them.
-//     for (int i=0; i<nodes.size(); i++){
-//         bst->insertNode(nodes[i]);
-//         // Check if it was correctly added.
-//         ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
-//     }
-//     // Delete the nodes in random order.
-//     random_shuffle(nodes.begin(), nodes.end());
-//     int i=0, j=0, element;
-//     while(i < nodes.size())
-//     {
-//         element = nodes.back();
-//         bst->deleteNode(element);
-//         nodes.pop_back();
-//         // Check if it was correctly deleted.
-//         ASSERT_EQ(NULL, bst->search(element));
-//         // All other nodes should still be on the BST.
-//         for (j = 0; j < nodes.size(); j++)
-//         {
-//             ASSERT_EQ(nodes[j], bst->search(nodes[j])->value);
-//         }
-//     }
-//     // Check everything else is as it was.
-//     for (int i=0; i<nodes.size(); i++){
-//         ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
-//     }
-// }
+TEST_F(BSTRecursiveTEST, RandomizedTest) {
+    static const int N = 5000;
+    vector<int> nodes;
+    vector<node<int>*> foundNodes;
+    // Generate N random nodes to insert.
+    srand(time(NULL));
+    for (int i=0; i<N; i++){
+        nodes.push_back(rand() * pow(-1, (rand() % 3) + 1));
+    }
+    // Insert them.
+    for (int i=0; i<nodes.size(); i++){
+        bst->insertNode(nodes[i]);
+        // Check if it was correctly added.
+        ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
+    }
+    // Delete the nodes in random order.
+    random_shuffle(nodes.begin(), nodes.end());
+    int i=0, j=0, element, sizeBefore, sizeAfter;
+    while(i < nodes.size())
+    {
+        element = nodes.back();
+        bst->searchAll(element, foundNodes);
+        sizeBefore = foundNodes.size();
+        bst->deleteNode(element);
+        sizeAfter = foundNodes.size();
+        if (sizeBefore == 0)
+            nodes.pop_back();
+        // Check if it was correctly deleted.
+        ASSERT_TRUE(sizeBefore < sizeAfter || (sizeBefore == sizeAfter && sizeAfter == 0));
+        // All other nodes should still be on the BST.
+        for (j = 0; j < nodes.size(); j++)
+        {
+            ASSERT_EQ(nodes[j], bst->search(nodes[j])->value);
+        }
+        foundNodes.clear();
+    }
+    // Check everything else is as it was.
+    for (int i=0; i<nodes.size(); i++){
+        ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
+    }
+}
 
 /**
  * @name    BST Recursive Tests
