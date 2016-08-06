@@ -226,7 +226,7 @@ void node<T>::recursiveInsertNode(T v, node<T>* n)
     // Return NULL if the root is NULL.
     if (n)
     {
-        if(v > n->value)
+        if(v >= n->value)
         {
             if(n->right != NULL)
             {
@@ -265,7 +265,7 @@ void node<T>::iterativeInsertNode(T v)
     bool inserted = false;
     while (!inserted)
     {
-        if(v > n->value)
+        if(v >= n->value)
         {
             if(n->right != NULL)
             {
@@ -618,7 +618,7 @@ void node<T>::iterativeSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
         {
             nodes.push_back(n);
         }
-        else if(v > n->value)
+        if(v >= n->value)
         {
             n = n->right;
         }
