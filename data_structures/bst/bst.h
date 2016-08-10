@@ -444,6 +444,7 @@ void node<T>::iterativeDeleteNode(T v)
             // Case III: Has two childs.
             else
             {
+                // TODO: Need to delete the parent of toDelete!
                 toDelete = iterativeGetGreatestNode(n->left);
                 n->value = toDelete->value;
                 if (n->left == toDelete)
