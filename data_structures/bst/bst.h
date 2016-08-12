@@ -83,7 +83,7 @@ struct node
 private:
     /* Private methods */
     node<T>* recursiveGetGreatestNode(node<T>* n);
-    node<T>* iterativeGetGreatestNode(node<T>* n);
+    node<T>* iterativeGetGreatestNode(node<T>* n, bool eraseParent);
 
     void recursiveInsertNode(T v, node<T>* n);
     void iterativeInsertNode(T v);
@@ -168,9 +168,10 @@ node<T>* node<T>::recursiveGetGreatestNode(node<T>* n)
  * @retval Greatest node in the tree.
  */
 template <typename T>
-node<T>* node<T>::iterativeGetGreatestNode(node<T>* n)
+node<T>* node<T>::iterativeGetGreatestNode(node<T>* n, bool eraseParent = false)
 {
     node<T>* it = n;
+    node<T>* parent = NULL;
 
     // Return NULL if the root is NULL.
     if (!n)
@@ -181,7 +182,13 @@ node<T>* node<T>::iterativeGetGreatestNode(node<T>* n)
 
     while(it->right != NULL)
     {
+        parent = it;
         it = it->right;
+    }
+
+    if (eraseParent && parent != NULL && parent != this)
+    {
+        parent->right = NULL;
     }
 
     return it;
@@ -445,10 +452,12 @@ void node<T>::iterativeDeleteNode(T v)
             else
             {
                 // TODO: Need to delete the parent of toDelete!
-                toDelete = iterativeGetGreatestNode(n->left);
+                toDelete = iterativeGetGreatestNode(n->left, true);
                 n->value = toDelete->value;
-                if (n->left == toDelete)
-                    n->left = NULL;
+                if ((unsigned long int)n->left == (unsigned long int)toDelete)
+                {
+                    n->left = toDelete->left;
+                }
             }
             deleted = true;
         }
