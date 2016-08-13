@@ -188,7 +188,8 @@ node<T>* node<T>::iterativeGetGreatestNode(node<T>* n, bool eraseParent = false)
 
     if (eraseParent && parent != NULL && parent != this)
     {
-        parent->right = NULL;
+        cout << "node: " << it->value << " parent: " << parent->value << endl;
+        parent->right = it->left;
     }
 
     return it;
@@ -451,12 +452,17 @@ void node<T>::iterativeDeleteNode(T v)
             // Case III: Has two childs.
             else
             {
-                // TODO: Need to delete the parent of toDelete!
                 toDelete = iterativeGetGreatestNode(n->left, true);
+                cout << "replacing with: " << toDelete->value << endl;
                 n->value = toDelete->value;
                 if ((unsigned long int)n->left == (unsigned long int)toDelete)
                 {
+                    cout << "A" << endl;
                     n->left = toDelete->left;
+                }
+                else
+                {
+                    cout << "B" << endl;
                 }
             }
             deleted = true;
@@ -626,6 +632,7 @@ void node<T>::iterativeSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
     {
         if(n->value == v)
         {
+            cout << "!!!!!!!!!!Adding node to searchAll nodes: " << n->value << endl;
             nodes.push_back(n);
         }
         if(v >= n->value)
