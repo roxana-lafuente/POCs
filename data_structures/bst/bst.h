@@ -137,6 +137,9 @@ node<T>* node<T>::getGreatestNode(node<T>* n)
  * @brief   Recursively returns the greatest node in the given BST
  *
  * @param [n] Root of the BST.
+ * @param [parent] Will save a pointer to the found node.
+ * @param [eraseParent] If true, it will modify the parent of the found node.
+ * @param [toErase] Pointer to the node we want to erase. This will not erase it.
  *
  * @retval Greatest node in the tree.
  */
@@ -176,6 +179,7 @@ node<T>* node<T>::recursiveGetGreatestNode(node<T>* n, node<T>* parent = NULL, b
  * @brief   Iteratively returns the greatest node in the given BST
  *
  * @param [n] Root of the BST.
+ * @param [eraseParent] If true, it will modify the parent of the found node.
  *
  * @retval Greatest node in the tree.
  */
@@ -238,6 +242,7 @@ void node<T>::insertNode(T v)
  * @brief   Recursively inserts a node
  *
  * @param [v] Value to insert.
+ * @param [n] Used to iterate through the BST.
  */
 template <typename T>
 void node<T>::recursiveInsertNode(T v, node<T>* n)
@@ -343,6 +348,7 @@ void node<T>::deleteNode(T v)
  * @brief   Recursively deletes a node
  *
  * @param [v] Value to delete.
+ * @param [n] Used to iterate through the BST.
  */
 template <typename T>
 node<T>* node<T>::recursiveDeleteNode(T v, node<T>* n)
@@ -509,6 +515,7 @@ node<T>* node<T>::search(T v)
  * @brief   Recursively searches for a specific node
  *
  * @param [v] Searches for a value and returns the corresponding node.
+ * @param [n] Used to iterate through the BST.
  *
  * @retparam Node with value v.
  */
@@ -539,6 +546,7 @@ node<T>* node<T>::recursiveSearch(T v, node<T>* n)
  * @brief   Iteratively searches for a specific node
  *
  * @param [v] Searches for a value and returns the corresponding node.
+ * @param [n] Used to iterate through the BST.
  *
  * @retparam Node with value v.
  */
@@ -570,6 +578,7 @@ node<T>* node<T>::iterativeSearch(T v, node<T>* n)
  * @brief   Searches for a specific node and returns all nodes with that value
  *
  * @param [v] Searches for a value and returns the corresponding list of node addresses.
+ * @param [nodes] All found nodes will be added to this vector.
  *
  * @retparam Node with value v.
  */
@@ -598,6 +607,8 @@ void node<T>::searchAll(T v, vector<node<T>*>& nodes)
  * @brief   Recursively searches for all nodes with a specific value
  *
  * @param [v] Searches for a value and returns the corresponding list of nodes.
+ * @param [n] Used to iterate through the BST.
+ * @param [nodes] All found nodes will be added to this vector.
  *
  * @retparam List of nodes with value v.
  */
@@ -627,6 +638,8 @@ void node<T>::recursiveSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
  * @brief   Iteratively searches for all nodes with a specific value
  *
  * @param [v] Searches for a value and returns the corresponding list of nodes.
+ * @param [n] Used to iterate through the BST.
+ * @param [nodes] All found nodes will be added to this vector.
  *
  * @retparam List of nodes with value v.
  */
