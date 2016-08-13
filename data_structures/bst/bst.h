@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <stack>
 #include <list>
 
@@ -82,7 +83,7 @@ struct node
 
 private:
     /* Private methods */
-    node<T>* recursiveGetGreatestNode(node<T>* n);
+    node<T>* recursiveGetGreatestNode(node<T>* n, node<T>* parent, bool eraseParent, node<T>* toErase);
     node<T>* iterativeGetGreatestNode(node<T>* n, bool eraseParent);
 
     void recursiveInsertNode(T v, node<T>* n);
@@ -140,7 +141,7 @@ node<T>* node<T>::getGreatestNode(node<T>* n)
  * @retval Greatest node in the tree.
  */
 template <typename T>
-node<T>* node<T>::recursiveGetGreatestNode(node<T>* n)
+node<T>* node<T>::recursiveGetGreatestNode(node<T>* n, node<T>* parent = NULL, bool eraseParent = false, node<T>* toErase = NULL)
 {
     // Return NULL if the root is NULL.
     if (!n)
@@ -150,10 +151,21 @@ node<T>* node<T>::recursiveGetGreatestNode(node<T>* n)
 
     if(n->right != NULL)
     {
-        return recursiveGetGreatestNode(n->right);
+        return recursiveGetGreatestNode(n->right, n, eraseParent);
     }
     else
     {
+        if (eraseParent && parent != NULL)
+        {
+            if (parent != toErase)
+            {
+                parent->right = n->left;
+            }
+            else
+            {
+                parent->left = n->left;
+            }
+        }
         return n;
     }
 }
@@ -188,7 +200,6 @@ node<T>* node<T>::iterativeGetGreatestNode(node<T>* n, bool eraseParent = false)
 
     if (eraseParent && parent != NULL && parent != this)
     {
-        cout << "node: " << it->value << " parent: " << parent->value << endl;
         parent->right = it->left;
     }
 
@@ -381,7 +392,7 @@ node<T>* node<T>::recursiveDeleteNode(T v, node<T>* n)
         // Case III: Has two childs.
         else
         {
-            toDelete = recursiveGetGreatestNode(n->left);
+            toDelete = recursiveGetGreatestNode(n->left, n, true, n);
             n->value = toDelete->value;
             n->right = recursiveDeleteNode(toDelete->value, n->right);
         }
@@ -453,16 +464,10 @@ void node<T>::iterativeDeleteNode(T v)
             else
             {
                 toDelete = iterativeGetGreatestNode(n->left, true);
-                cout << "replacing with: " << toDelete->value << endl;
                 n->value = toDelete->value;
                 if ((unsigned long int)n->left == (unsigned long int)toDelete)
                 {
-                    cout << "A" << endl;
                     n->left = toDelete->left;
-                }
-                else
-                {
-                    cout << "B" << endl;
                 }
             }
             deleted = true;
@@ -605,13 +610,13 @@ void node<T>::recursiveSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
         {
             nodes.push_back(n);
         }
-        else if(v > n->value)
+        if(v >= n->value)
         {
-            recursiveSearch(v, n->right);
+            recursiveSearchAll(v, n->right, nodes);
         }
-        else if(v < n->value)
+        if(v <= n->value)
         {
-            recursiveSearch(v, n->left);
+            recursiveSearchAll(v, n->left, nodes);
         }
     }
 }
@@ -628,21 +633,26 @@ void node<T>::recursiveSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
 template <typename T>
 void node<T>::iterativeSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
 {
-    while(n != NULL)
+    queue <node<T>*> q;
+    q.push(n);
+    while(!q.empty())
     {
-        if(n->value == v)
-        {
-            cout << "!!!!!!!!!!Adding node to searchAll nodes: " << n->value << endl;
-            nodes.push_back(n);
+        if(q.front() != NULL){
+            n = q.front();
+            if(n->value == v)
+            {
+                nodes.push_back(n);
+            }
+            if(v >= n->value)
+            {
+                q.push(n->right);
+            }
+            if(v <= n->value)
+            {
+                q.push(n->left);
+            }
         }
-        if(v >= n->value)
-        {
-            n = n->right;
-        }
-        else if(v < n->value)
-        {
-            n = n->left;
-        }
+        q.pop();
     }
 }
 

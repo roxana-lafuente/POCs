@@ -13,8 +13,8 @@
 #include <ctime>     // time
 #include "bst.h"
 
-static const int N = 50; // BST nodes size
-static const int T = 50; // Times to repeat tests
+static const int N = 500; // BST nodes size
+static const int T = 150; // Times to repeat tests
 
 /**
  * @name    BST Recursive Tests
@@ -113,37 +113,41 @@ TEST_F(BSTTEST, TestDeleteDoesNotExist) {
 
 void InsertAndDeleteSeveralNodes(node<int>* bst)
 {
-    // Nodes to keep track of.
-    vector<int> nodes = {10, 9, 11, 30, 25, 40, 24, 26, 35, 41};
+    vector<int> nodes; // Nodes to keep track of.
+    int j=0, element;
 
-    // Add the nodes.
-    int i=0, j=0, element;
-    while(i < nodes.size())
+    for(int times = 0; times < T; times++)
     {
-        bst->insertNode(nodes[i]);
-        // Check if it was correctly added.
-        ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
-        i++;
-    }
-    // Start deleting nodes at random.
-    random_shuffle(nodes.begin(), nodes.end());
-    i = 0;
-    while(i < nodes.size())
-    {
-        element = nodes.back();
-        bst->deleteNode(element);
-        nodes.pop_back();
-        // Check if it was correctly deleted.
-        ASSERT_EQ(NULL, bst->search(element));
-        // All other nodes should still be on the BST.
-        for (j = 0; j < nodes.size(); j++)
+        nodes = {10, 9, 11, 30, 25, 40, 24, 26, 35, 41};
+        // Add the nodes.
+        for(int i=0; i < nodes.size(); i++)
         {
-            ASSERT_EQ(nodes[j], bst->search(nodes[j])->value);
+            bst->insertNode(nodes[i]);
+            // Check if it was correctly added.
+            ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
         }
-    }
+        // Start deleting nodes at random.
+        random_shuffle(nodes.begin(), nodes.end());
+        int i = 0;
+        while(i < nodes.size())
+        {
+            element = nodes.back();
+            bst->deleteNode(element);
+            nodes.pop_back();
+            // Check if it was correctly deleted.
+            ASSERT_EQ(NULL, bst->search(element));
+            // All other nodes should still be on the BST.
+            for (j = 0; j < nodes.size(); j++)
+            {
+                ASSERT_EQ(nodes[j], bst->search(nodes[j])->value);
+            }
+        }
 
-    // The root should be intact.
-    ASSERT_EQ(-1, bst->search(-1)->value);
+        // The root should be intact.
+        ASSERT_EQ(-1, bst->search(-1)->value);
+
+        nodes.clear();
+    }
 }
 
 TEST_F(BSTTEST, TestInsertAndDeleteSeveralNodes)
@@ -178,54 +182,128 @@ TEST_F(BSTTEST, TestDeleteRoot)
     DeleteRoot(iterativeBST);
 }
 
-// TEST_F(BSTIterativeTEST, RandomizedTest) {
-//     vector<int> nodes;
-//     vector<node<int>*> foundNodes;
-//     // Generate N random nodes to insert.
-//     srand(time(NULL));
-//     for (int i=0; i<N; i++){
-//         nodes.push_back((int)(rand() * pow(-1, (rand() % 3) + 1)) % 25);
-//     }
-//     // Insert them.
-//     for (int i=0; i<nodes.size(); i++){
-//         bst->insertNode(nodes[i]);
-//         // Check if it was correctly added.
-//         ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
-//     }
-//     // Delete the nodes in random order.
-//     random_shuffle(nodes.begin(), nodes.end());
-//     int i=0, j=0, element, sizeBefore, sizeAfter;
-//     while(i < nodes.size())
-//     {
-//         element = nodes.back();
-//         foundNodes.clear();
-//         bst->searchAll(element, foundNodes);
-//         sizeBefore = foundNodes.size();
-//         bst->print();
-//         cout << "erasing: " << element << endl;
-//         bst->deleteNode(element);
-//         bst->print();
-//         foundNodes.clear();
-//         bst->searchAll(element, foundNodes);
-//         sizeAfter = foundNodes.size();
-//         cout << "sizeBefore: " << sizeBefore << " sizeAfter: " << sizeAfter << endl;
-//         nodes.pop_back();
-//         // Check if it was correctly deleted.
-//         ASSERT_TRUE(sizeBefore > sizeAfter || (sizeBefore == sizeAfter && sizeAfter == 0));
-//         // All other nodes should still be on the BST.
-//         for (j = 0; j < nodes.size(); j++)
-//         {
-//             // cout << "looking for: " << nodes[j] << ", erasing: " << element << endl;
-//             ASSERT_EQ(nodes[j], bst->search(nodes[j])->value);
-//         }
-//     }
-//     // Check everything else is as it was.
-//     for (int i=0; i<nodes.size(); i++){
-//         ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
-//     }
-// }
+void SearchOneNode(node<int>* bst)
+{
+    vector<int> nodes = {12, -12, 12, -112, -5};
+    for (int i=0; i<nodes.size(); i++)
+    {
+        bst->insertNode(nodes[i]);
+        // Check if it was correctly added.
+        ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
+    }
+    // All nodes should be found.
+    for (int i=0; i<nodes.size(); i++)
+    {
+        ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
+    }
+}
 
-int main(int argc, char **argv) {
+TEST_F(BSTTEST, TestSearchOneNode)
+{
+    SearchOneNode(recursiveBST);
+    SearchOneNode(iterativeBST);
+}
+
+void SearchAll(node<int>* bst)
+{
+    vector<int> nodes = {7, -770, 12, 7, 43, 7, -12, 7, 43, 7, -112, 7, -5, 43, 7, 59, -110, 55, 909};
+    vector<node<int>*> foundNodes;
+
+    for (int i=0; i<nodes.size(); i++)
+    {
+        bst->insertNode(nodes[i]);
+        // Check if it was correctly added.
+        ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
+    }
+    // Search all should find zero nodes.
+    bst->searchAll(14, foundNodes);
+    ASSERT_EQ(0, foundNodes.size());
+    // Search all should find one node.
+    foundNodes.clear();
+    bst->searchAll(12, foundNodes);
+    ASSERT_EQ(1, foundNodes.size());
+    ASSERT_EQ(12, foundNodes[0]->value);
+    // Search all should find three nodes.
+    foundNodes.clear();
+    bst->searchAll(43, foundNodes);
+    ASSERT_EQ(3, foundNodes.size());
+    for(int i=0; i<3; i++)
+    {
+        ASSERT_EQ(43, foundNodes[i]->value);
+    }
+    // Search all should find seven nodes.
+    foundNodes.clear();
+    bst->searchAll(7, foundNodes);
+    ASSERT_EQ(7, foundNodes.size());
+    for(int i=0; i<7; i++)
+    {
+        ASSERT_EQ(7, foundNodes[i]->value);
+    }
+}
+
+TEST_F(BSTTEST, TestSearchAllZeroNode)
+{
+    SearchAll(recursiveBST);
+    SearchAll(iterativeBST);
+}
+
+void RandomizedTest(node<int>* bst)
+{
+    vector<int> nodes;
+    vector<node<int>*> foundNodes;
+    // Generate N random nodes to insert.
+    for(int times=0; times<T; times++)
+    {
+        srand(time(NULL));
+        for (int i=0; i<N; i++)
+        {
+            nodes.push_back((int)(rand() * pow(-1, (rand() % 3) + 1)) % 25);
+        }
+        // Insert them.
+        for (int i=0; i<nodes.size(); i++)
+        {
+            bst->insertNode(nodes[i]);
+            // Check if it was correctly added.
+            ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
+        }
+        // Delete the nodes in random order.
+        random_shuffle(nodes.begin(), nodes.end());
+        int i=0, j=0, element, sizeBefore, sizeAfter;
+        while(i < nodes.size())
+        {
+            element = nodes.back();
+            foundNodes.clear();
+            bst->searchAll(element, foundNodes);
+            sizeBefore = foundNodes.size();
+            bst->deleteNode(element);
+            foundNodes.clear();
+            bst->searchAll(element, foundNodes);
+            sizeAfter = foundNodes.size();
+            nodes.pop_back();
+            // Check if it was correctly deleted.
+            ASSERT_TRUE(sizeBefore > sizeAfter || (sizeBefore == sizeAfter && sizeAfter == 0));
+            // All other nodes should still be on the BST.
+            for (j = 0; j < nodes.size(); j++)
+            {
+                ASSERT_EQ(nodes[j], bst->search(nodes[j])->value);
+            }
+        }
+        // Check everything else is as it was.
+        for (int i=0; i<nodes.size(); i++)
+        {
+            ASSERT_EQ(nodes[i], bst->search(nodes[i])->value);
+        }
+    }
+}
+
+TEST_F(BSTTEST, TestRandomizedTest)
+{
+    RandomizedTest(recursiveBST);
+    RandomizedTest(iterativeBST);
+}
+
+int main(int argc, char **argv)
+{
     ::testing::InitGoogleTest( &argc, argv );
     return RUN_ALL_TESTS();
 }
