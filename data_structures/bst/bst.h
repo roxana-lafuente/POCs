@@ -1,6 +1,6 @@
 /**
  * @file   bst.h
- * @Author Me (roxana.lafuente@gmail.com)
+ * @Author Roxana Anabel Lafuente (roxana.lafuente@gmail.com)
  * @date   July, 2016
  * @brief  C++ Binary Search Tree (BST) implementation.
  *
@@ -15,6 +15,7 @@
 #include <queue>
 #include <stack>
 #include <list>
+#include <tuple>
 
 using namespace std;
 
@@ -672,7 +673,7 @@ void node<T>::iterativeSearchAll(T v, node<T>* n, vector<node<T>*>& nodes)
 
 /**
  * @name    print
- * @brief   Prints the BST
+ * @brief   Prints the BST in-order
  */
 template <typename T>
 void node<T>::print()
@@ -697,46 +698,67 @@ void node<T>::print()
 
 /**
  * @name    recursivePrint
- * @brief   Recursively prints a BST
+ * @brief   Recursively prints a BST in-order
  */
 template <typename T>
 void node<T>::recursivePrint(node<T>* n)
 {
     if(n != NULL)
     {
-        cout << "( ";
         if (n->left != NULL)
         {
             recursivePrint(n->left);
         }
-        else
-        {
-            cout << " LEAF ";
-        }
-        cout << n->value;
+        cout << n->value << " ";
         if(n->right != NULL)
         {
             recursivePrint(n->right);
         }
-        else
-        {
-            cout << " LEAF ";
-        }
-        cout << " )";
     }
 }
 
 
 /**
  * @name    iterativePrint
- * @brief   Iteratively prints a BST
+ * @brief   Iteratively prints a BST in-order
  */
 template <typename T>
 void node<T>::iterativePrint()
 {
-    // TODO
-    cout << "NOT IMPLEMENTED, momentarily using recursive implementation" << endl;
-    recursivePrint(this);
+    stack<pair<node<T>*, bool>> s;
+    pair<node<T>*, bool> it;
+    node<T>* n;
+    s.push(make_pair(this, false));
+    while(!s.empty())
+    {
+        it = s.top();
+        n = it.first;
+        s.pop();
+        if(!it.second)
+        {
+            if(n->right != NULL)
+            {
+                s.push(make_pair(n->right, false));
+            }
+            s.push(make_pair(n, true));
+            if(n->left != NULL)
+            {
+                s.push(make_pair(n->left, false));
+            }
+            if(n->left == NULL)
+            {
+                cout << n->value << " ";
+                if (!s.empty())
+                {
+                    s.pop();
+                }
+            }
+        }
+        else{
+            cout << n->value << " ";
+        }
+    }
+    cout << endl;
 }
 
 #endif // BST_H

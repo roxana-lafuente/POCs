@@ -1,10 +1,10 @@
 /**
  * @file   tests.cpp
- * @Author Me (roxana.lafuente@gmail.com)
+ * @Author Roxana Anabel Lafuente (roxana.lafuente@gmail.com)
  * @date   July, 2016
  * @brief  BST Tests.
  *
- * BST - C++ Tests with Google Code.
+ * BST - C++ Tests with Google Tests.
  */
 #include <gtest/gtest.h>
 #include <algorithm> // for random_shuffle
@@ -22,7 +22,7 @@ static const int T = 150; // Times to repeat tests
  *
  * This tests the recursive implementation of a BST.
  */
-class BSTTEST : public ::testing::Test
+class BST : public ::testing::Test
 { 
 public: 
 
@@ -57,7 +57,7 @@ void InsertAndDeleteOneNode(node<int>* bst)
     ASSERT_EQ(-1, bst->search(-1)->value);
 }
 
-TEST_F(BSTTEST, TestInsertAndDeleteOneNode)
+TEST_F(BST, TestInsertAndDeleteOneNode)
 {
     InsertAndDeleteOneNode(recursiveBST);
     InsertAndDeleteOneNode(iterativeBST);
@@ -80,7 +80,7 @@ void DeleteLeaf(node<int>* bst)
     ASSERT_EQ(-1, bst->search(-1)->value);
 }
 
-TEST_F(BSTTEST, TestDeleteLeaf)
+TEST_F(BST, TestDeleteLeaf)
 {
     DeleteLeaf(recursiveBST);
     DeleteLeaf(iterativeBST);
@@ -106,7 +106,7 @@ void DeleteDoesNotExist(node<int>* bst)
     ASSERT_EQ(-1, bst->search(-1)->value);
 }
 
-TEST_F(BSTTEST, TestDeleteDoesNotExist) {
+TEST_F(BST, TestDeleteDoesNotExist) {
     DeleteDoesNotExist(recursiveBST);
     DeleteDoesNotExist(iterativeBST);
 }
@@ -150,7 +150,7 @@ void InsertAndDeleteSeveralNodes(node<int>* bst)
     }
 }
 
-TEST_F(BSTTEST, TestInsertAndDeleteSeveralNodes)
+TEST_F(BST, TestInsertAndDeleteSeveralNodes)
 {
     InsertAndDeleteSeveralNodes(recursiveBST);
     InsertAndDeleteSeveralNodes(iterativeBST);
@@ -176,7 +176,7 @@ void DeleteRoot(node<int>* bst)
     }
 }
 
-TEST_F(BSTTEST, TestDeleteRoot)
+TEST_F(BST, TestDeleteRoot)
 {
     DeleteRoot(recursiveBST);
     DeleteRoot(iterativeBST);
@@ -198,7 +198,7 @@ void SearchOneNode(node<int>* bst)
     }
 }
 
-TEST_F(BSTTEST, TestSearchOneNode)
+TEST_F(BST, TestSearchOneNode)
 {
     SearchOneNode(recursiveBST);
     SearchOneNode(iterativeBST);
@@ -241,7 +241,7 @@ void SearchAll(node<int>* bst)
     }
 }
 
-TEST_F(BSTTEST, TestSearchAllZeroNode)
+TEST_F(BST, TestSearchAllZeroNode)
 {
     SearchAll(recursiveBST);
     SearchAll(iterativeBST);
@@ -296,7 +296,7 @@ void RandomizedTest(node<int>* bst)
     }
 }
 
-TEST_F(BSTTEST, TestRandomizedTest)
+TEST_F(BST, TestRandomizedTest)
 {
     RandomizedTest(recursiveBST);
     RandomizedTest(iterativeBST);

@@ -54,4 +54,4 @@ sudo ldconfig -v | grep gtest
 - Linux (Ubuntu / Debian).
 
 ## Project Status:
-- In progress.
+- Phase I Completed: Insert, Delete, FindGreatestNode, Search, SearchAll, In-order print (Both recursive and iterative).

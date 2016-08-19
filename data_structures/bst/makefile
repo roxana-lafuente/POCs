@@ -1,3 +1,8 @@
+# @file   makefile
+# @Author Roxana Anabel Lafuente (roxana.lafuente@gmail.com)
+# @date   August, 2016
+# @brief  BST Tests Makefile.
+
 TARGET = bst
 TESTS = tests
 CC = g++
