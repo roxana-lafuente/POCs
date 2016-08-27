@@ -4,4 +4,4 @@
 
 ## Programming assignment I - Linear regression
 - Instructions: ex1.pdf
-- Status: In progress
+- Status: Completed.
