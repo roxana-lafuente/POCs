@@ -14,4 +14,4 @@
 ### Data Science:
 
 ## Machine Learning - Andrew Ng - Coursera
-- Programming assignment I: Linear regression in Python and Octave
+- Programming assignment I: Linear regression in Python
