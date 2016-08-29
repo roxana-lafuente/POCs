@@ -2,8 +2,6 @@
 
 ### Machine Learning - Andrew Ng - Coursera.
 
-## Programming assignment I - Linear regression
-- Status: Completed.
-
 ## Programming assignment II - Logistic regression
+- Instructions: ex2.pdf
 - Status: In progress.
