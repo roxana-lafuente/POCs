@@ -13,5 +13,5 @@
 
 ### Data Science:
 
-## Machine Learning - Andrew Ng - Coursera
+#### Machine Learning - Andrew Ng - Coursera
 - Programming assignment I: Linear regression in Python
