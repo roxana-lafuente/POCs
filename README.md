@@ -2,6 +2,7 @@
 
 ## Languages:
 - C++
+- Python
 
 ## Projects:
 
@@ -15,3 +16,5 @@
 
 #### Machine Learning - Andrew Ng - Coursera
 - Programming assignment I: Linear regression in Python
+- Programming assignment II: Logistic regression in Python
+- POC: Calculating correlation of a dataset with Numpy.

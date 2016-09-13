@@ -3,3 +3,6 @@
 ## Machine Learning Programming Assignments - Andrew Ng - Coursera.
 - Location: /data_science/MachineLearning-AndrewNg-Coursera
 - Status: In progress
+
+## POCs
+- correlation.py: Calculating correlation of a dataset with Numpy.
