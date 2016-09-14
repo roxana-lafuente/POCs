@@ -35,6 +35,7 @@ dataset = load_boston()
 boston = pd.DataFrame(dataset.data, columns=dataset.feature_names)
 boston['MEDV'] = dataset.target
 
+# Analise data
 print boston.describe()
 print "\n" * 10
 print boston.corr(method='pearson')
@@ -42,7 +43,7 @@ print "\n" * 10
 corr_with_target = boston.corr(method='pearson').ix[-1][:-1]
 print corr_with_target[abs(corr_with_target).argsort()[::-1]]
 
-# Predict
+# Predict - Ordinary Least Squares (OLS)
 X = sm.add_constant(boston['LSTAT'])
 y = dataset.target
 model = sm.OLS(y, X)
@@ -69,3 +70,6 @@ ax.set_ylabel('MEDV')
 ax.set_title("MEDV vs LSTAT")
 
 plt.show()
+
+# TODO: - log o log, exp
+#       graficar la curva 
