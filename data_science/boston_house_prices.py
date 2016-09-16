@@ -65,10 +65,12 @@ fig, ax = plt.subplots(figsize=(12,8))
 # Linear model.
 x = np.linspace(boston.min()['LSTAT'], boston.max()['LSTAT'], N)
 f = theta[0] + (theta[1] * x)
+prediction = lambda x: theta[0] + (theta[1] * x)
 
 # Linear model + Log Transformation.
 log_x = np.linspace(boston.min()['LSTAT'], boston.max()['LSTAT'], N)
 log_f = np.exp(log_theta[0] + (log_theta[1] * log_x))
+log_prediction = lambda log_x : np.exp(log_theta[0] + (log_theta[1] * log_x))
 
 # Plot linear model.
 ax.plot(x, f, 'r', label='OLS Prediction', color='Black')
@@ -85,11 +87,38 @@ ax.set_xlabel('LSTAT')
 ax.set_ylabel('MEDV')
 ax.set_title("MEDV vs LSTAT")
 
-# Choose better model.
+# We need values without the one column for calculating the errors.
+X = boston['LSTAT']
+
+# Calculate and print errors.
+print "RSME - Root Square Mean Error"
 rms = sqrt(mean_squared_error(boston['LSTAT'], f))
 log_rms = sqrt(mean_squared_error(boston['LSTAT'], log_f))
+print "Linear model:", rms, "Log model:", log_rms
+print "\n"
 
-print "RSME - Root Square Mean Error"
-print "LINEAR RSME:", rms, "LOG RMS:", log_rms
+print "SSE - Error Sum of Squares or Residual Sum of Squares"
+# SSE can be interpreted as a measure of how much variation in y is left
+# unexplained by the model - that is, how much cannot be attributed to a
+# linear relationship.
+SSE = np.sum(np.square(np.subtract(y, prediction(X))))
+log_SSE = np.sum(np.square(np.subtract(y, log_prediction(X))))
+print "Linear model:", SSE, "Log model:", log_SSE
+print "\n"
+
+print "SST - Total Sum of Squares"
+# A quantitative measure of the total amount of variation in observed y
+# values is given by the total sum of squares.
+SST = np.sum(np.square(np.subtract(y, np.mean(y))))
+log_SST = np.sum(np.square(np.subtract(log_y, np.mean(y))))
+print "Linear model:", SST, "Log model:", log_SST
+print "\n"
+
+
+print "R^2 - Coefficient of determination"
+# It is interpreted as the proportion of observed y variation that can be
+# explained by the simple linear regression model (attributed to an approximate
+# linear relationship between y and x).
+print "Linear model:", (1 - SSE/SST), "Log model:", (1 - log_SSE/log_SST)
 
 plt.show()
