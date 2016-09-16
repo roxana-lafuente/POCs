@@ -69,6 +69,16 @@ log_model = sm.OLS(log_y, log_X)
 log_theta = log_model.fit()
 log_theta = log_theta.params
 
+# Predict - Ordinary Least Squares (OLS) - Multivariate: LSTAT + RM + Log Transformation.
+X = pd.DataFrame(boston['LSTAT'])
+ones = np.ones(N)
+X = sm.add_constant(np.column_stack((X['LSTAT'], ones)))
+X = sm.add_constant(boston['LSTAT'])
+X['RM'] = boston['RM']
+multilog_model = sm.OLS(np.log(y), X)
+multilog_theta = multilog_model.fit()
+multilog_theta = multilog_theta.params
+
 # Plot data set.
 fig, ax = plt.subplots(figsize=(12,8))
 
@@ -87,6 +97,11 @@ multi_prediction = lambda x, y: multi_theta[0] + (multi_theta[1] * x) + (multi_t
 x = np.linspace(boston.min()['MEDV'], boston.max()['MEDV'], N)
 log_f = np.exp(log_theta[0] + (log_theta[1] * x))
 log_prediction = lambda x : np.exp(log_theta[0] + (log_theta[1] * x))
+
+# Linear model. Multivariate: LSTAT + RM + Log Transformation.
+x = np.linspace(boston.min()['LSTAT'], boston.max()['LSTAT'], N)
+multilog_f = np.exp(multilog_theta[0] + (multilog_theta[1] * x) + (multilog_theta[2] * y))
+multilog_prediction = lambda x, y : np.exp(multilog_theta[0] + (multilog_theta[1] * x) + (multilog_theta[2] * y))
 
 # Plot linear model.
 ax.plot(x, f, 'r', label='OLS Prediction', color='Black')
@@ -113,7 +128,9 @@ print "RSME - Root Square Mean Error"
 rms = sqrt(mean_squared_error(boston['MEDV'], f))
 log_rms = sqrt(mean_squared_error(boston['MEDV'], log_f))
 multi_rsme = sqrt(mean_squared_error(boston['MEDV'], multi_f))
-print "Linear model:", rms, "Log model:", log_rms, "Multivariate model:", multi_rsme
+multilog_rsme = sqrt(mean_squared_error(boston['MEDV'], multilog_f))
+print "Linear model:", rms, "Log model:", log_rms,
+print "Multivariate model:", multi_rsme, "Multivariate log model:", multilog_rsme
 print "\n"
 
 print "SSE - Error Sum of Squares or Residual Sum of Squares"
@@ -123,7 +140,9 @@ print "SSE - Error Sum of Squares or Residual Sum of Squares"
 SSE = np.sum(np.square(np.subtract(y, prediction(X))))
 log_SSE = np.sum(np.square(np.subtract(y, log_prediction(X))))
 multi_SSE = np.sum(np.square(np.subtract(y, multi_prediction(X, X1))))
-print "Linear model:", SSE, "Log model:", log_SSE, "Multivariate model:", multi_SSE
+multilog_SSE = np.sum(np.square(np.subtract(y, multilog_prediction(X, X1))))
+print "Linear model:", SSE, "Log model:", log_SSE, "Multivariate model:",
+print multi_SSE, "Multivariate log model:", multilog_SSE
 print "\n"
 
 print "SST - Total Sum of Squares"
@@ -139,6 +158,7 @@ print "R^2 - Coefficient of determination"
 # explained by the simple linear regression model (attributed to an approximate
 # linear relationship between y and x).
 print "Linear model:", (1 - SSE/SST), "Log model:", (1 - log_SSE/SST),
-print "Multivariate model:", (1 - multi_SSE/SST)
+print "Multivariate model:", (1 - multi_SSE/SST),
+print "Multivariate log model:", (1 - multilog_SSE/SST),
 
 plt.show()
