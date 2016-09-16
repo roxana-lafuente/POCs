@@ -5,4 +5,9 @@
 - Status: In progress
 
 ## POCs
-- correlation.py: Calculating correlation of a dataset with Numpy.
+
+### correlation.py:
+- Calculating correlation of a dataset with Numpy.
+- Model 1: Linear regression.
+- Model 2: Linear regression with log transformation.
+- RMSE for comparison of models 1 and 2.

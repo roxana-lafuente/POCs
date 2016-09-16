@@ -17,4 +17,11 @@
 #### Machine Learning - Andrew Ng - Coursera
 - Programming assignment I: Linear regression in Python
 - Programming assignment II: Logistic regression in Python
-- POC: Calculating correlation of a dataset with Numpy.
+
+#### POCs:
+
+##### Boston dataset.
+- Calculating correlation of a dataset with Numpy.
+- Model 1: Linear regression.
+- Model 2: Linear regression with log transformation.
+- RMSE for comparison of models 1 and 2.
