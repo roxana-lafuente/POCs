@@ -1,6 +1,7 @@
 from sklearn.datasets import load_boston
+from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
-from math import exp, log
+from math import exp, log, sqrt
 import statsmodels.api as sm
 import pandas as pd
 import numpy as np
@@ -66,7 +67,7 @@ x = np.linspace(boston.min()['LSTAT'], boston.max()['LSTAT'], N)
 f = theta[0] + (theta[1] * x)
 
 # Linear model + Log Transformation.
-log_x = np.linspace(boston.min()['LSTAT'], boston.max()['LSTAT']+16, N)
+log_x = np.linspace(boston.min()['LSTAT'], boston.max()['LSTAT'], N)
 log_f = np.exp(log_theta[0] + (log_theta[1] * log_x))
 
 # Plot linear model.
@@ -84,7 +85,11 @@ ax.set_xlabel('LSTAT')
 ax.set_ylabel('MEDV')
 ax.set_title("MEDV vs LSTAT")
 
-plt.show()
+# Choose better model.
+rms = sqrt(mean_squared_error(boston['LSTAT'], f))
+log_rms = sqrt(mean_squared_error(boston['LSTAT'], log_f))
 
-# TODO: - log o log, exp
-#       graficar la curva 
+print "RSME - Root Square Mean Error"
+print "LINEAR RSME:", rms, "LOG RMS:", log_rms
+
+plt.show()
