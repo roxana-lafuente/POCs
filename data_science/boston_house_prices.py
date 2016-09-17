@@ -1,3 +1,6 @@
+# Author: Roxana Anabel Lafuente
+# Started on: September 2016
+
 from sklearn.datasets import load_boston
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt

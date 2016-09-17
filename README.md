@@ -21,7 +21,8 @@
 #### POCs:
 
 ##### Boston dataset.
-- Calculating correlation of a dataset with Numpy.
 - Model 1: Linear regression.
 - Model 2: Linear regression with log transformation.
-- RMSE for comparison of models 1 and 2.
+- Model 3: Multivariate linear regression.
+- Model 4: Multivariate linear regression with log transformation.
+- RMSE and R^2 for model comparison.
