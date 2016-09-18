@@ -32,3 +32,7 @@
 #### Calculating roots.
 - Bisection method.
 - Newthon / Raphson method.
+
+#### Solving linear equation systems.
+- Jacobi.
+- Gauss-Seidel.
