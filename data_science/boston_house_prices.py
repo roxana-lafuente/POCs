@@ -9,6 +9,7 @@ from math import exp, log, sqrt
 import statsmodels.api as sm
 import pandas as pd
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
 import copy
 
 """
@@ -155,7 +156,7 @@ f_testing = prediction_train(x1_testing.as_matrix())
 # Linear model plot.
 x = np.linspace(boston.min()['LSTAT'], boston.max()['MEDV'], N)
 ax.plot(x, prediction(x), 'r', label='OLS', color='Black')
-ax.plot(x, prediction_train(x), 'r', label='OLS Train', color='Green')
+ax.plot(x, prediction_train(x), 'r', label='OLS 80%', color='Green')
 
 # Linear model - Multivariate: LSTAT + RM Prediction.
 multif = multi_prediction(boston['LSTAT'], boston['RM'])
@@ -182,11 +183,25 @@ ax.set_title("MEDV vs LSTAT")
 ax.legend(loc=2)
 
 # Another plot.
-# fig2, ax2 = plt.subplots(figsize=(12,8))
-# # Scatter plot.
-# ax2.scatter(x1_training, y_training, label='Train Dataset', color='Cyan')
-# ax2.scatter(x1_testing, y_testing, label='Expected', color='Green')
-# ax2.scatter(x1_testing, f_testing, label='Prediction', color='Blue')
+fig2, ax2 = plt.subplots(figsize=(12,8))
+ax2 = Axes3D(fig2)
+# 3D Scatter plot.
+ax2.scatter(x1_training, x2_training, y_training, label='Dataset', color='Cyan')
+x1 = np.arange(0, 35, 0.5)
+x2 = np.arange(4, 10, 0.5)
+x1, x2 = np.meshgrid(x1, x2)
+z = multi_prediction(x1, x2)
+ax2.plot_surface(x1, x2, z, label='Multivariate OLS', color='Green', alpha=0.2)
+z = multilog_prediction(x1, x2)
+ax2.plot_surface(x1, x2, z, label='Multivariate OLS + Log', color='Red', alpha=0.2)
+# ax2.plot(x1, x1, x1, 'r')
+# ax2.plot(x1, x2, x1, 'r', label='Multivariate OLS + Log', color='Red')
+
+# Plot settings.
+ax2.set_xlabel('LSTAT')
+ax2.set_ylabel('RM')
+ax2.set_zlabel('MEDV')
+ax2.set_title("MEDV vs RM vs LSTAT")
 
 # Show plot.
 plt.show()

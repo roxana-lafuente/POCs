@@ -39,11 +39,14 @@ You will find files:
 - a886.dat (Matrix A)
 - x886.dat (Initial approximation x)
 - b886.dat (Solution vector B)
-- solution886.dat (Real solution, for testing purposes)
+- solution886.dat (Real solution, for testing purposes
+
 Suggested parameters:
+
 With Jacobi:
 - Tolerance: 0.00001.
 - Maximum iterations: 3150.
+
 With Gauss-Seidel:
 - Tolerance: 0.00001.
 - Maximum iterations: 1575.
