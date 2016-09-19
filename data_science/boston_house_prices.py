@@ -44,21 +44,21 @@ boston = pd.DataFrame(dataset.data, columns=dataset.feature_names)
 N = len(boston)
 boston['MEDV'] = dataset.target
 # Divide data set: 70% training data, 30% testing data.
-boston_training, boston_testing = train_test_split(boston, test_size = 1)
+boston_training, boston_testing = train_test_split(boston, test_size = 0.2)
 
 # Training data.
-x1_training = sm.add_constant(boston_training['LSTAT']).as_matrix()
-x2_training = sm.add_constant(boston_training['RM']).as_matrix()
+x1_training = sm.add_constant(boston_training['LSTAT'])
+x2_training = sm.add_constant(boston_training['RM'])
 
 # Testing data.
-x1_testing = boston_testing['LSTAT'].as_matrix()
-x2_testing = boston_testing['RM'].as_matrix()
+x1_testing = boston_testing['LSTAT']
+x2_testing = boston_testing['RM']
 
 # 
 y_training = boston_training['MEDV'].as_matrix()
 y_testing = boston_testing['MEDV'].as_matrix()
-y_training_log = np.log(boston_training['MEDV']).as_matrix()
-y_testing_log = np.log(boston_testing['MEDV']).as_matrix()
+y_training_log = np.log(boston_training['MEDV'])
+y_testing_log = np.log(boston_testing['MEDV'])
 
 # Whole dataset.
 X = sm.add_constant(boston['LSTAT'])
@@ -134,13 +134,13 @@ multilog_prediction_train = lambda x, y : np.exp(multilog_theta_train[0] + (mult
 
 """ ********************* PLOTS & PREDICTIONS ********************** """
 # We need values without the one column for calculating the errors.
-X1 = boston['RM']
+X1 = boston['RM'].as_matrix()
 # Training data.
-x1_training = boston_training['LSTAT']
-x2_training = boston_training['RM']
+x1_training = boston_training['LSTAT'].as_matrix()
+x2_training = boston_training['RM'].as_matrix()
 # Whole dataset.
-X = boston['LSTAT']
-mX_training = boston_training['LSTAT']
+X = boston['LSTAT'].as_matrix()
+mX_training = boston_training['LSTAT'].as_matrix()
 
 # Prepare plots.
 fig, ax = plt.subplots(figsize=(12,8))
@@ -149,31 +149,29 @@ fig, ax = plt.subplots(figsize=(12,8))
 ax.scatter(boston['MEDV'], boston['LSTAT'], label='Dataset', color='Cyan')
 
 # Linear model prediction.
-x = np.linspace(boston.min()['LSTAT'], boston.max()['MEDV'], N)
-f = prediction(x)
+f = prediction(boston['LSTAT'])
 f_training = prediction_train(x1_training)
-f_testing = prediction_train(x1_testing)
+f_testing = prediction_train(x1_testing.as_matrix())
 # Linear model plot.
-ax.plot(x, f, 'r', label='OLS', color='Black')
+x = np.linspace(boston.min()['LSTAT'], boston.max()['MEDV'], N)
+ax.plot(x, prediction(x), 'r', label='OLS', color='Black')
 ax.plot(x, prediction_train(x), 'r', label='OLS Train', color='Green')
 
 # Linear model - Multivariate: LSTAT + RM Prediction.
-x1 = np.linspace(boston.min()['LSTAT'], boston.max()['LSTAT'], N)
-x2 = np.linspace(boston.min()['RM'], boston.max()['RM'], N)
-multif = multi_prediction(x1, x2)
+multif = multi_prediction(boston['LSTAT'], boston['RM'])
 multif_training = multi_prediction_train(x1_training, x2_training)
 multif_testing = multi_prediction_train(x1_testing, x2_testing)
 
 # Linear model + Log Transformation Prediction.
 x = np.linspace(boston.min()['LSTAT'], boston.max()['MEDV'], N)
-log_f = log_prediction(x)
+log_f = log_prediction(boston['LSTAT'])
 log_f_training = log_prediction_train(x1_training)
 log_f_testing = log_prediction_train(x1_testing)
 # Linear model + Log Transformation Plot.
-ax.plot(x, log_f, 'r', label='OLS + Log Transformation', color='Red')
+ax.plot(x, log_prediction(x), 'r', label='OLS + Log Transformation', color='Red')
 
 # Linear model. Multivariate: LSTAT + RM + Log Transformation.
-multilogf = multilog_prediction(x1, x2)
+multilogf = multilog_prediction(boston['LSTAT'], boston['RM'])
 multilogf_training = multilog_prediction_train(x1_training, x2_training)
 multilogf_testing = multilog_prediction_train(x1_testing, x2_testing)
 
@@ -239,7 +237,6 @@ print "\n\n\nRMSE - Root Mean Square Error - Training"
 # The less, the better.
 # RMSE LINEAR MODEL.
 rmse = sqrt(mean_squared_error(y, f))
-f_training = f_training.as_matrix()
 rmse_train = sqrt(mean_squared_error(y_training, f_training))
 rmse_test = sqrt(mean_squared_error(y_testing, f_testing))
 print "* Univariate Linear model *"
