@@ -60,12 +60,15 @@ y_training = boston_training['MEDV'].as_matrix()
 y_testing = boston_testing['MEDV'].as_matrix()
 y_training_log = np.log(boston_training['MEDV'])
 y_testing_log = np.log(boston_testing['MEDV'])
+y_training_squared = np.sqrt(boston_training['MEDV'])
+y_testing_squared = np.sqrt(boston_testing['MEDV'])
 
 # Whole dataset.
 X = sm.add_constant(boston['LSTAT'])
 
 # Log data.
 y_log = np.log(dataset.target)
+y_squared = np.sqrt(dataset.target)
 
 # Whole multivariate data set.
 mX = copy.deepcopy(X)
@@ -133,6 +136,29 @@ multilog_theta_train = multilog_model_train.fit().params
 multilog_prediction = lambda x, y : np.exp(multilog_theta[0] + (multilog_theta[1] * x) + (multilog_theta[2] * y))
 multilog_prediction_train = lambda x, y : np.exp(multilog_theta_train[0] + (multilog_theta_train[1] * x) + (multilog_theta_train[2] * y))
 
+""" ********** TRAIN - Ordinary Least Squares (OLS) + SQRT Transformation. *********** """
+squared_model = sm.OLS(y_squared, X)
+squared_theta = squared_model.fit().params
+
+squared_model_train = sm.OLS(y_training_squared, x1_training)
+squared_theta_train = squared_model_train.fit().params
+
+# Prediction function.
+squared_prediction = lambda x : np.square(squared_theta[0] + (squared_theta[1] * x))
+squared_prediction_train = lambda x : np.square(squared_theta_train[0] + (squared_theta_train[1] * x))
+
+""" ********** TRAIN - Ordinary Least Squares (OLS) + SQRT Transformation. *********** """
+# Multivariate: LSTAT + RM + Log Transformation.
+smultilog_model = sm.OLS(y_squared, mX)
+smultilog_theta = smultilog_model.fit().params
+
+smultilog_model_train = sm.OLS(y_training_squared, mX_training)
+smultilog_theta_train = smultilog_model_train.fit().params
+
+# Prediction function.
+smultilog_prediction = lambda x, y : np.square(smultilog_theta[0] + (smultilog_theta[1] * x) + (smultilog_theta[2] * y))
+smultilog_prediction_train = lambda x, y : np.square(smultilog_theta_train[0] + (smultilog_theta_train[1] * x) + (smultilog_theta_train[2] * y))
+
 """ ********************* PLOTS & PREDICTIONS ********************** """
 # We need values without the one column for calculating the errors.
 X1 = boston['RM'].as_matrix()
@@ -155,8 +181,8 @@ f_training = prediction_train(x1_training)
 f_testing = prediction_train(x1_testing.as_matrix())
 # Linear model plot.
 x = np.linspace(boston.min()['LSTAT'], boston.max()['MEDV'], N)
-ax.plot(x, prediction(x), 'r', label='OLS', color='Black')
-ax.plot(x, prediction_train(x), 'r', label='OLS 80%', color='Green')
+ax.plot(x, prediction(x), 'r', label='OLS 100%', color='Green')
+ax.plot(x, prediction_train(x), 'r', label='OLS 80%', color='Blue')
 
 # Linear model - Multivariate: LSTAT + RM Prediction.
 multif = multi_prediction(boston['LSTAT'], boston['RM'])
@@ -169,18 +195,31 @@ log_f = log_prediction(boston['LSTAT'])
 log_f_training = log_prediction_train(x1_training)
 log_f_testing = log_prediction_train(x1_testing)
 # Linear model + Log Transformation Plot.
-ax.plot(x, log_prediction(x), 'r', label='OLS + Log Transformation', color='Red')
+ax.plot(x, log_prediction(x), 'r', label='OLS 100% + Log Transformation', color='Red')
+
+# Linear model + SQRT Transformation Prediction.
+x = np.linspace(boston.min()['LSTAT'], boston.max()['MEDV'], N)
+squared_f = squared_prediction(boston['LSTAT'])
+squared_f_training = squared_prediction_train(x1_training)
+squared_f_testing = squared_prediction_train(x1_testing)
+# Linear model + Log Transformation Plot.
+ax.plot(x, squared_prediction(x), 'r', label='OLS 100% + SQRT Transformation', color='Purple')
 
 # Linear model. Multivariate: LSTAT + RM + Log Transformation.
 multilogf = multilog_prediction(boston['LSTAT'], boston['RM'])
 multilogf_training = multilog_prediction_train(x1_training, x2_training)
 multilogf_testing = multilog_prediction_train(x1_testing, x2_testing)
 
+# Linear model. Multivariate: LSTAT + RM + SQRT Transformation.
+smultilogf = smultilog_prediction(boston['LSTAT'], boston['RM'])
+smultilogf_training = smultilog_prediction_train(x1_training, x2_training)
+smultilogf_testing = smultilog_prediction_train(x1_testing, x2_testing)
+
 # Plot settings.
 ax.set_xlabel('LSTAT')
 ax.set_ylabel('MEDV')
 ax.set_title("MEDV vs LSTAT")
-ax.legend(loc=2)
+ax.legend()
 
 # Another plot.
 fig2, ax2 = plt.subplots(figsize=(12,8))
@@ -194,8 +233,8 @@ z = multi_prediction(x1, x2)
 ax2.plot_surface(x1, x2, z, label='Multivariate OLS', color='Green', alpha=0.2)
 z = multilog_prediction(x1, x2)
 ax2.plot_surface(x1, x2, z, label='Multivariate OLS + Log', color='Red', alpha=0.2)
-# ax2.plot(x1, x1, x1, 'r')
-# ax2.plot(x1, x2, x1, 'r', label='Multivariate OLS + Log', color='Red')
+z = smultilog_prediction(x1, x2)
+ax2.plot_surface(x1, x2, z, label='Multivariate OLS + SQRT', color='Purple', alpha=0.2)
 
 # Plot settings.
 ax2.set_xlabel('LSTAT')
@@ -236,17 +275,6 @@ print "Linear model:", (1 - SSE/SST), "Log model:", (1 - log_SSE/SST),
 print "Multivariate model:", (1 - multi_SSE/SST),
 print "Multivariate log model:", (1 - multilog_SSE/SST),
 
-# Predict - Ordinary Least Squares (OLS) - Multivariate: LSTAT + RM + Log Transformation + Splitting dataset.
-X = pd.DataFrame(boston_training['LSTAT'])
-ones = np.ones(N)
-X = sm.add_constant(boston_training['LSTAT'])
-X['RM'] = boston_training['RM']
-y1 = boston_training['MEDV']
-multilog_model2 = sm.OLS(np.log(y1), X)
-multilog_theta2 = multilog_model2.fit()
-multilog_theta2 = multilog_theta2.params
-prediction = lambda s, k: multilog_theta2[0] + (multilog_theta2[1] * s) + (multilog_theta2[2] * k)
-
 
 print "\n\n\nRMSE - Root Mean Square Error - Training"
 # The less, the better.
@@ -264,6 +292,13 @@ log_rmse_test = sqrt(mean_squared_error(y_testing, log_f_testing))
 print "\n* Univariate Linear model + Log *"
 print "RMSE Training:", log_rmse_train, "RMSE Testing:", log_rmse_test, "RMSE All:", log_rmse
 
+# RMSE LINEAR MODEL + - LOG TRANSFORMATION
+squared_rmse = sqrt(mean_squared_error(y, squared_f))
+squared_rmse_train = sqrt(mean_squared_error(y_training, squared_f_training))
+squared_rmse_test = sqrt(mean_squared_error(y_testing, squared_f_testing))
+print "\n* Univariate Linear model + SQRT *"
+print "RMSE Training:", squared_rmse_train, "RMSE Testing:", squared_rmse_test, "RMSE All:", squared_rmse
+
 # RMSE MULTIVARIATE
 multi_rmse = sqrt(mean_squared_error(y, multif))
 multi_RMSE_train = sqrt(mean_squared_error(y_training, multif_training))
@@ -277,4 +312,12 @@ multilog_RMSE_train = sqrt(mean_squared_error(y_training, multilogf_training))
 multilog_RMSE_test = sqrt(mean_squared_error(y_testing, multilogf_testing))
 print "\n* Multivariate model + Log *"
 print "RMSE Training:", multilog_RMSE_train, "RMSE Testing:", multilog_RMSE_test, "RMSE All:", multilog_rmse
+
+# RMSE MULTIVARIATE + SQRT
+smultilog_rmse = sqrt(mean_squared_error(y, smultilogf))
+smultilog_RMSE_train = sqrt(mean_squared_error(y_training, smultilogf_training))
+smultilog_RMSE_test = sqrt(mean_squared_error(y_testing, smultilogf_testing))
+print "\n* Multivariate model + SQRT *"
+print "RMSE Training:", smultilog_RMSE_train, "RMSE Testing:", smultilog_RMSE_test, "RMSE All:", smultilog_rmse
+
 print "\n"
