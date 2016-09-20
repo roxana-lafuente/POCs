@@ -45,7 +45,7 @@ boston = pd.DataFrame(dataset.data, columns=dataset.feature_names)
 N = len(boston)
 boston['MEDV'] = dataset.target
 # Divide data set: 70% training data, 30% testing data.
-boston_training, boston_testing = train_test_split(boston, test_size = 0.2)
+boston_training, boston_testing = train_test_split(boston, test_size = 0.3)
 
 # Training data.
 x1_training = sm.add_constant(boston_training['LSTAT'])
@@ -89,12 +89,13 @@ y = dataset.target
 
 # Train model with all data.
 model = sm.OLS(y, X)
-theta = model.fit()
-theta = theta.params
+model = model.fit()
+theta = model.params
 
 # Train model with training data only.
 model_train = sm.OLS(y_training, x1_training)
-theta_train = model_train.fit().params
+model_train = model_train.fit()
+theta_train = model_train.params
 
 # Prediction function.
 prediction = lambda x: theta[0] + (theta[1] * x)
@@ -103,11 +104,13 @@ prediction_train = lambda m: theta_train[0] + (theta_train[1] * m)
 """ ********** TRAIN - Multivariate Ordinary Least Squares (OLS) *********** """
 # Multivariate: LSTAT + RM. Train model with all data.
 multi_model = sm.OLS(y, mX)
-multi_theta = multi_model.fit().params
+multi_model = multi_model.fit()
+multi_theta = multi_model.params
 
 # Train model with training data only.
 multi_model_train = sm.OLS(y_training, mX_training)
-multi_theta_train = multi_model_train.fit().params
+multi_model_train = multi_model_train.fit()
+multi_theta_train = multi_model_train.params
 
 # Prediction function.
 multi_prediction = lambda x, y: multi_theta[0] + (multi_theta[1] * x) + (multi_theta[2] * y)
@@ -115,10 +118,12 @@ multi_prediction_train = lambda x, y: multi_theta_train[0] + (multi_theta_train[
 
 """ ********** TRAIN - Ordinary Least Squares (OLS) + Log Transformation. *********** """
 log_model = sm.OLS(y_log, X)
-log_theta = log_model.fit().params
+log_model = log_model.fit()
+log_theta = log_model.params
 
 log_model_train = sm.OLS(y_training_log, x1_training)
-log_theta_train = log_model_train.fit().params
+log_model_train = log_model_train.fit()
+log_theta_train = log_model_train.params
 
 # Prediction function.
 log_prediction = lambda x : np.exp(log_theta[0] + (log_theta[1] * x))
@@ -127,10 +132,12 @@ log_prediction_train = lambda x : np.exp(log_theta_train[0] + (log_theta_train[1
 """ ********** TRAIN - Ordinary Least Squares (OLS) + Log Transformation. *********** """
 # Multivariate: LSTAT + RM + Log Transformation.
 multilog_model = sm.OLS(y_log, mX)
-multilog_theta = multilog_model.fit().params
+multilog_model = multilog_model.fit()
+multilog_theta = multilog_model.params
 
 multilog_model_train = sm.OLS(y_training_log, mX_training)
-multilog_theta_train = multilog_model_train.fit().params
+multilog_model_train = multilog_model_train.fit()
+multilog_theta_train = multilog_model_train.params
 
 # Prediction function.
 multilog_prediction = lambda x, y : np.exp(multilog_theta[0] + (multilog_theta[1] * x) + (multilog_theta[2] * y))
@@ -138,10 +145,12 @@ multilog_prediction_train = lambda x, y : np.exp(multilog_theta_train[0] + (mult
 
 """ ********** TRAIN - Ordinary Least Squares (OLS) + SQRT Transformation. *********** """
 squared_model = sm.OLS(y_squared, X)
-squared_theta = squared_model.fit().params
+squared_model = squared_model.fit()
+squared_theta = squared_model.params
 
 squared_model_train = sm.OLS(y_training_squared, x1_training)
-squared_theta_train = squared_model_train.fit().params
+squared_model_train = squared_model_train.fit()
+squared_theta_train = squared_model_train.params
 
 # Prediction function.
 squared_prediction = lambda x : np.square(squared_theta[0] + (squared_theta[1] * x))
@@ -150,10 +159,12 @@ squared_prediction_train = lambda x : np.square(squared_theta_train[0] + (square
 """ ********** TRAIN - Ordinary Least Squares (OLS) + SQRT Transformation. *********** """
 # Multivariate: LSTAT + RM + Log Transformation.
 smultilog_model = sm.OLS(y_squared, mX)
-smultilog_theta = smultilog_model.fit().params
+smultilog_model = smultilog_model.fit()
+smultilog_theta = smultilog_model.params
 
 smultilog_model_train = sm.OLS(y_training_squared, mX_training)
-smultilog_theta_train = smultilog_model_train.fit().params
+smultilog_model_train = smultilog_model_train.fit()
+smultilog_theta_train = smultilog_model_train.params
 
 # Prediction function.
 smultilog_prediction = lambda x, y : np.square(smultilog_theta[0] + (smultilog_theta[1] * x) + (smultilog_theta[2] * y))
@@ -243,7 +254,7 @@ ax2.set_zlabel('MEDV')
 ax2.set_title("MEDV vs RM vs LSTAT")
 
 # Show plot.
-plt.show()
+# plt.show()
 
 """ ********************* MODEL EVALUATION ********************** """
 
@@ -320,4 +331,11 @@ smultilog_RMSE_test = sqrt(mean_squared_error(y_testing, smultilogf_testing))
 print "\n* Multivariate model + SQRT *"
 print "RMSE Training:", smultilog_RMSE_train, "RMSE Testing:", smultilog_RMSE_test, "RMSE All:", smultilog_rmse
 
+print "\n\n* PREDICTION SAMPLES for LSTAT = 4.98 and RM = 6.575 *"
+print "Linear univariate         =", model_train.predict([1.00000000e+00, 4.98])
+print "Linear univariate + Log   =", np.exp(log_model_train.predict([1.00000000e+00, 4.98]))
+print "Linear multivariate       =", multi_model_train.predict([1.00000000e+00, 4.98, 6.575])
+print "Linear multivariate + Log =", np.exp(multilog_model_train.predict([1.00000000e+00, 4.98, 6.575]))
+
+# 28.35521125793457
 print "\n"
