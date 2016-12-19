@@ -1,11 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Based on https://www.analyticsvidhya.com/blog/2016/02/time-series-forecasting-codes-python/ tutorial
 
 from statsmodels.tsa.stattools import adfuller
 import pandas as pd
 import numpy as np
 import matplotlib.pylab as plt
-# from matplotlib.pylab import rcParams
-# rcParams['figure.figsize'] = 15, 6
+
 
 def stationarity_test(ts):
     # Determining rolling mean and variance.
@@ -33,16 +34,13 @@ def stationarity_test(ts):
     print "\nConclusion:"
     for key, value in dftest[4].items():
         if dfoutput['Test Statistic'] < dfoutput['Critical Value (%s)' % key]:
-            print "Stationary: Reject",
+            print "Non-stationary series: Reject",
         else:
-            print "Non-stationary: Accept",
+            print "Non-stationary series: Accept",
         print "at %s level" % key
 
+# Read data from file
 data = pd.read_csv('AirPassengers.csv')
-print data.head()
-print '\n Data Types:'
-print data.dtypes
-print data.index
 ts = data['#Passengers']
 """
 Step 1: Check if Time Series(TS) is stationary.
@@ -62,7 +60,87 @@ If the 'Test Statistic' is less than the 'Critical Value', we can reject the
 null hypothesis and say that the series is stationary.
 Note: unless your time series is stationary, you cannot build a time series model!
 """
-stationarity_test(ts)
+# stationarity_test(ts)
 
-# plt.plot(ts)
-# plt.show()
+"""
+Step 2: Make TS stationary.
+
+There are two main reasons why a TS is not stationary:
+
+* Trending: The mean varies over time.
+* Seasonality: Variations at specific time frames.
+
+The underlying principle is to model the trend and seasonality in the series and
+remove those from the series to get a stationary series. Then statistical
+forecasting techniques can be implemented on this series. The final step would
+be to convert the forecasted values into the original scale by applying trend
+and seasonality constraints back.
+"""
+
+# Transformation plot
+# fig, ax = plt.subplots(figsize=(12,8))
+
+# Original
+# ax.plot(ts, 'r', label='Original', color='#FA8258')
+
+# Log
+# ts_log = np.log(ts)
+# ax.plot(ts_log, 'r', label='log', color='#bf00ff')
+
+# SQRT
+# ts_sqrt = np.sqrt(ts)
+# ax.plot(ts_sqrt, 'r', label='sqrt', color='#39004d')
+
+# Show plot
+# ax.set_xlabel('Time')
+# ax.set_xlim([0, 100])
+# ax.set_ylabel('# Passengers')
+# ax.set_ylim([0, 5])
+# ax.set_title("Potential transformations")
+# ax.legend()
+
+"""
+As we can see when we run the code, the transformation technique was not useful
+this time. So we will try other techniques:
+- Aggregation - taking average for a time period like monthly/weekly averages
+"""
+
+# Aggregation technique plot
+# fig, ax = plt.subplots(figsize=(12,8))
+
+# Original
+# s = pd.Series(ts.values, index=pd.to_datetime(ts.keys(), unit='s'))
+# ts_agg = s.resample('5S').mean()
+
+# ax.plot(ts_agg, 'r', label='Aggregated series', color='#bf00ff')
+
+# Show plot
+# ax.set_xlabel('Time')
+# ax.set_ylabel('# Passengers')
+# ax.set_title("Potential transformations")
+# ax.legend()
+
+"""
+Since the aggregation technique did not work, we will try with the next one:
+- Smoothing - taking rolling averages
+"""
+# Aggregation technique plot
+fig, ax = plt.subplots(figsize=(12,8))
+
+# Original
+s = pd.Series(ts.values, index=pd.to_datetime(ts.keys(), unit='s'))
+ts_agg = s.resample('5S').mean()
+
+ax.plot(ts_agg, 'r', label='Aggregated series', color='#bf00ff')
+
+# Show plot
+ax.set_xlabel('Time')
+ax.set_ylabel('# Passengers')
+ax.set_title("Potential transformations")
+ax.legend()
+
+"""
+- Polynomial Fitting - fit a regression model
+"""
+
+plt.show()
