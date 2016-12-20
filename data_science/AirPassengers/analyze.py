@@ -174,4 +174,19 @@ stationarity_test(smooth_ts)
 We won't cover this technique as smooth_series is already stationary.
 """
 
+"""
+Step 3: Eliminating Trend and Seasonality
+
+The trend reduction techniques we used before won't work in all cases,
+particularly when there is high seasonality. In these cases, we can use:
+
+- Differencing: taking the difference with a particular time lag
+- Decomposition: modeling both trend and seasonality and removing them from the
+model.
+"""
+
+"""
+Step 4: Time series forecasting
+"""
+
 plt.show()
